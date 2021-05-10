@@ -1,0 +1,107 @@
+---
+title: "Euro 2021 Predictor"
+knit: (function(input_file, encoding) {
+  out_dir <- 'docs';
+  rmarkdown::render(input_file,
+ encoding=encoding,
+ output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
+author: "Gillard BT"
+date: "Updated: `r Sys.Date()`"
+output: 
+  html_document: 
+    toc: yes
+    toc_depth: 4
+    theme: cerulean
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, tidy = TRUE)
+```
+
+```{r FormatData, message=FALSE}
+#read in real life results
+TrueResults<- readxl::read_excel("EuroPredictorTrueResults.xlsm")
+TrueResults<- TrueResults[7:42, 3:6]
+colnames(TrueResults)<- c("Home", "HomeScore", "AwayScore", "Away")
+TrueResults<- cbind(TrueResults, Result = ifelse(TrueResults$HomeScore == TrueResults$AwayScore, "Draw", ifelse(TrueResults$HomeScore > TrueResults$AwayScore, TrueResults$Home, TrueResults$Away))) #result information
+AllPreds<- list(CorrectResults = TrueResults) #seed list so player predictions can be added
+
+#get predictions from every player (use loop calling all files in Entries directory)
+entries<- list.files("Entries/", full.names = TRUE)
+for(file in entries){
+predictionsRoot<- readxl::read_excel(file) #change to file
+player<- gsub(" ", "", as.character(predictionsRoot[47,2]),  fixed = TRUE)
+predictions<- predictionsRoot[7:42, 3:6]
+colnames(predictions)<- c("Home", "HomeScore", "AwayScore", "Away")
+predictions<- cbind(predictions, Result = ifelse(predictions$HomeScore == predictions$AwayScore, "Draw", ifelse(predictions$HomeScore > predictions$AwayScore, predictions$Home, predictions$Away))) #result information
+AllPreds<- append(AllPreds, list(predictions)) #append player's predictions to list seeded by correct results
+names(AllPreds)[length(AllPreds)]<- player #rename list with player name
+}
+
+saveRDS(object = AllPreds, file = "AllResults.RDS") #save object so this chunk only needs to be run if new players submit results
+```
+
+
+```{r ImportResults}
+Results<- readRDS(file = "AllResults.RDS")
+
+#loop over each row?
+  #cbind points to each player? with lapply?
+invisible(unlist(lapply(names(Results[2:length(Results)]), function(x) identical(Results[[1]][[1]], Results[[x]][[1]])))) #check format is identical by checking home team names
+
+#successful points vector for one player (first player in the Results list object)
+#unlist(lapply(1:nrow(Results$CorrectResults[!is.na(Results$CorrectResults$HomeScore),]), function(row) ifelse(identical(Results[[1]][[row,2]], Results[[2]][[row,2]]) & identical(Results[[1]][[row,3]], Results[[2]][[row,3]]), 3, ifelse(identical(Results[[1]][[row,5]], Results[[2]][[row,5]]), 1, 0))))
+
+Scores<- lapply(names(Results[2:length(Results)]), function(x) unlist(lapply(1:nrow(Results$CorrectResults[!is.na(Results$CorrectResults$HomeScore),]), function(row) ifelse(identical(Results[[1]][[row,2]], Results[[x]][[row,2]]) & identical(Results[[1]][[row,3]], Results[[x]][[row,3]]), 3, ifelse(identical(Results[[1]][[row,5]], Results[[x]][[row,5]]), 1, 0)))))
+
+names(Scores)<- names(Results[2:length(Results)])
+```
+
+**Welcome to the EURO 2020 Predictor Championship!**. The aim of the game is simple, predict the scores for all of the group stage games at this year's tournament. Each correct *score* earns 3 points. Each correct *result* earns 1 point.
+
+We have `r length(Results)-1` players involved so we have a healthy kitty to pay out for the top 3 players. £`r (length(Results)-1)*5*0.5` goes to the top dog. £`r (length(Results)-1)*5*0.3` for the top loser. And £`r (length(Results)-1)*5*0.2` for the best of the rest.
+
+#Leaderboard
+
+```{r Leaderboard}
+LeaderBoard<- data.frame(Player = names(Scores), Points = unlist(lapply(Scores, sum)), CorrectScore = unlist(lapply(Scores, function(x) sum(x == 3))), CorrectResult = unlist(lapply(Scores, function(x) sum(x == 1))), row.names = NULL)
+
+library(kableExtra)
+kbl(LeaderBoard[order(LeaderBoard$Points, LeaderBoard$CorrectScore, decreasing = TRUE),], caption = "Table of Champions", align = "l", row.names = FALSE) %>% kable_classic() %>%  row_spec(1, bold = T, background = "#c9b037") %>% row_spec(2, bold = T, background = "#b4b4b4") %>% row_spec(3, bold = T, background = "#ad8a56")
+```
+
+> When 2 players have the same points tally, correct scores are taken into account. If players are still equal, the tie break question "How many total goals (including knockout games) will England score at Euro 2020?" will come into play. Closest wins.
+
+#Hypothetical Euros
+
+```{r IfwePredicted}
+WinnerCount<- sapply(names(Results[2:length(Results)]), function(x) summary(as.factor(Results[[x]][["Result"]])), USE.NAMES = TRUE)
+
+#top predicted result
+lapply(names(WinnerCount), function(x) names(WinnerCount[[x]])[which(WinnerCount[[x]] == max(WinnerCount[[x]]))])
+
+#bottom predicted result
+lapply(names(WinnerCount), function(x) names(WinnerCount[[x]])[which(WinnerCount[[x]] == min(WinnerCount[[x]]))])
+
+
+#draws
+sapply(names(Results[2:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Draw"), USE.NAMES = TRUE)
+
+#england wins
+sapply(names(Results[2:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "England"), USE.NAMES = TRUE)
+
+#scotland wins
+sapply(names(Results[2:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Scotland"), USE.NAMES = TRUE)
+```
+
+If players were a god-like council deciding the outcome of this summer's football:
+
+* Team predicted to win most:
+* Team predicted to lose most:
+* Team predicted highest scorers:
+* Team predicted lowest scorers:
