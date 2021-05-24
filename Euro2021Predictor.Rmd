@@ -62,13 +62,13 @@ Scores<- lapply(names(Results[2:length(Results)]), function(x) unlist(lapply(1:n
 names(Scores)<- names(Results[2:length(Results)])
 ```
 
-**Welcome to the EURO 2020 Predictor Championship!**. The aim of the game is simple, predict the scores for all of the group stage games at this year's tournament. Each correct *score* earns 3 points. Each correct *result* earns 1 point.
+**Welcome to the EURO 2020 Predictor Championship!** The aim of the game is simple, predict the scores for all of the group stage games at this year's tournament. Each correct *score* earns 3 points. Each correct *result* earns 1 point.
 
 We have `r length(Results)-1` players involved so we have a healthy kitty to pay out for the top 3 players. £`r (length(Results)-1)*5*0.5` goes to the top dog. £`r (length(Results)-1)*5*0.3` for the top loser. And £`r (length(Results)-1)*5*0.2` for the best of the rest.
 
 #Leaderboard
 
-```{r Leaderboard}
+```{r Leaderboard, message=FALSE}
 LeaderBoard<- data.frame(Player = names(Scores), Points = unlist(lapply(Scores, sum)), CorrectScore = unlist(lapply(Scores, function(x) sum(x == 3))), CorrectResult = unlist(lapply(Scores, function(x) sum(x == 1))), row.names = NULL)
 
 library(kableExtra)
@@ -77,31 +77,52 @@ kbl(LeaderBoard[order(LeaderBoard$Points, LeaderBoard$CorrectScore, decreasing =
 
 > When 2 players have the same points tally, correct scores are taken into account. If players are still equal, the tie break question "How many total goals (including knockout games) will England score at Euro 2020?" will come into play. Closest wins.
 
+##England Goals
+
+Tracks the tie break question of how many goals England will score. The TrueGoals are updated after every England game.
+
+```{r englandGoals, message=FALSE}
+TrueGoals<- as.numeric(readxl::read_excel("EuroPredictorTrueResults.xlsm")[44,7])
+AllGoals<- list(TrueGoals = TrueGoals) #seed list so player predictions can be added
+for(file in entries){
+predictionsRoot<- readxl::read_excel(file) #change to file
+player<- gsub(" ", "", as.character(predictionsRoot[47,2]),  fixed = TRUE)
+EngGoals<- as.numeric(predictionsRoot[44,7])
+#result information
+AllGoals<- append(AllGoals, list(EngGoals)) #append player's predictions to list seeded by correct results
+names(AllGoals)[length(AllGoals)]<- player #rename list with player name
+}
+barplot(unlist(AllGoals), main = "Tie Breaker: England Goals scored", col = c("red", "white"), las = 2, cex.names = 0.7)
+abline(h = AllGoals$TrueGoals, lty = 2, col = "red")
+```
+
 #Hypothetical Euros
 
-```{r IfwePredicted}
+Just a couple of plots showing who we, as a group of Mystic Megs, predict will be the winners and losers in the group stage.
+
+```{r IfwePredicted, fig.show='hold', out.width='50%'}
 WinnerCount<- sapply(names(Results[2:length(Results)]), function(x) summary(as.factor(Results[[x]][["Result"]])), USE.NAMES = TRUE)
 
 #top predicted result
-lapply(names(WinnerCount), function(x) names(WinnerCount[[x]])[which(WinnerCount[[x]] == max(WinnerCount[[x]]))])
+barplot(table(unlist(lapply(names(WinnerCount), function(x) names(WinnerCount[[x]])[which(WinnerCount[[x]] == max(WinnerCount[[x]]))]))), horiz = TRUE, las = 1, cex.names = 0.5, col = viridis::rocket(10), main = "Overall most predicted results", xlab = "Number of wins predicted", xlim=range(pretty(c(0, 10))))
 
 #bottom predicted result
-lapply(names(WinnerCount), function(x) names(WinnerCount[[x]])[which(WinnerCount[[x]] == min(WinnerCount[[x]]))])
-
-
-#draws
-sapply(names(Results[2:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Draw"), USE.NAMES = TRUE)
-
-#england wins
-sapply(names(Results[2:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "England"), USE.NAMES = TRUE)
-
-#scotland wins
-sapply(names(Results[2:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Scotland"), USE.NAMES = TRUE)
+barplot(table(unlist(lapply(names(WinnerCount), function(x) names(WinnerCount[[x]])[which(WinnerCount[[x]] == min(WinnerCount[[x]]))]))), horiz = TRUE, las = 1, cex.names = 0.5, col = viridis::magma(10), main = "Overall least predicted results", xlab = "Number of wins predicted", xlim=range(pretty(c(0, 3), n = 3)))
 ```
 
-If players were a god-like council deciding the outcome of this summer's football:
+And looking at how many times everyone has picked a draw, England win, or Scotland win (more specifics available on request).
 
-* Team predicted to win most:
-* Team predicted to lose most:
-* Team predicted highest scorers:
-* Team predicted lowest scorers:
+```{r specificTeams, fig.show='hold'}
+#draws
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Draw"), USE.NAMES = TRUE), main = "Predicted number of Draws", col = viridis::turbo(length(Results)), las = 2, cex.names = 0.7)
+abline(h = sum(Results$CorrectResults[["Result"]] == "Draw"), lty = 2, col = "black")
+
+#england wins
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "England"), USE.NAMES = TRUE), main = "Predicted number of England Wins", col = c("red", "white"), las = 2, cex.names = 0.7)
+abline(h = sum(Results$CorrectResults[["Result"]] == "England"), lty = 2, col = "black")
+
+#scotland wins
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Scotland"), USE.NAMES = TRUE), main = "Predicted number of Scotland Wins", col = c("blue", "white"), las = 2, cex.names = 0.7)
+abline(h = sum(Results$CorrectResults[["Result"]] == "Scotland"), lty = 2, col = "black")
+```
+
