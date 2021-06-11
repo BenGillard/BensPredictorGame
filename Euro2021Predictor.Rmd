@@ -70,7 +70,7 @@ names(Scores)<- names(Results[2:length(Results)])
 
 **Welcome to the EURO 2020 Predictor Championship!** The aim of the game is simple, predict the scores for all of the group stage games at this year's tournament. Each correct *score* earns 3 points. Each correct *result* earns 1 point.
 
-We have `r length(Results)-2` players involved so we have a healthy kitty to pay out for the top 3 players. £`r (length(Results)-2)*5*0.5` goes to the top dog. £`r (length(Results)-2)*5*0.3` for the top loser. And £`r (length(Results)-2)*5*0.2` for the best of the rest.
+We have **`r length(Results)-2` players** involved so we have a healthy kitty to pay out for the **top 5 players. £`r round(x = (length(Results)-2)*5*0.45, digits = 2)` goes to the top dog. £`r round(x = (length(Results)-2)*5*0.25, digits = 2)` for the top loser. £`r round(x = (length(Results)-2)*5*0.15, digits = 2)` for the best of the rest. And £`r round(x = (length(Results)-2)*5*0.075, digits = 2)` for 4th and 5th places.**
 
 On the [Leaderboard] you'll see an extra player called *RandomControlEntry* in <span style="color: red;">red</span>. These predictions were generated randomly using the macro included in the spreadsheet. So if you have fewer points than *RandomControlEntry*, any thought you put into your entry was an utter waste of time. 
 
@@ -84,7 +84,7 @@ LeaderBoard<- data.frame(Player = names(Scores), Points = unlist(lapply(Scores, 
 LeaderBoard<- LeaderBoard[order(LeaderBoard$Points, LeaderBoard$CorrectScore, decreasing = TRUE),]
 rownames(LeaderBoard)<- 1:nrow(LeaderBoard)
 
-kbl(LeaderBoard, caption = "Table of Champions", align = "l", row.names = TRUE) %>% kable_classic(html_font = "Cambria") %>%  row_spec(1, bold = T, background = "#c9b037") %>% row_spec(2, bold = T, background = "#b4b4b4") %>% row_spec(3, bold = T, background = "#ad8a56") %>% row_spec(which(LeaderBoard$Player == "RandomControlEntry"), italic = T, color = "red")
+kbl(LeaderBoard, caption = "Table of Champions (Coloured rows indicate money winners)", align = "l", row.names = TRUE) %>% kable_classic(html_font = "Cambria") %>%  row_spec(1, bold = T, background = "#c9b037") %>% row_spec(2, bold = T, background = "#b4b4b4") %>% row_spec(3, bold = T, background = "#ad8a56") %>% row_spec(4:5, bold = T, background = "#3CB371") %>% row_spec(which(LeaderBoard$Player == "RandomControlEntry"), italic = T, color = "red")
 ```
 
 > When 2 players have the same points tally, correct scores are taken into account. If players are still equal, the tie break question "How many total goals (including knockout games but excluding penalty shoot outs) will England score at Euro 2020?" will come into play. Closest wins.
@@ -111,7 +111,7 @@ abline(h = AllGoals$TrueGoals, lty = 2, col = "red")
 
 #Hypothetical Euros
 
-Just a couple of plot showing who we, as a collective of Mystic Megs, predict will be the winners and losers in the group stage. How many times have we predicted a win for each team?
+Who do we, as a collective of Mystic Megs, predict will be the winners and losers in the group stage? This plot shows how many times each team has been predicted to win a match in the group stages.
 
 ```{r IfwePredicted, fig.show='hold'}
 WinnerCount<- sapply(names(Results[2:length(Results)]), function(x) summary(as.factor(Results[[x]][["Result"]])), USE.NAMES = TRUE)
@@ -125,7 +125,7 @@ barplot(sort(sapply(unique(Results$CorrectResults$Home), function (x) sum(grepl(
 #barplot(table(unlist(lapply(names(WinnerCount), function(x) names(WinnerCount[[x]])[which(WinnerCount[[x]] == min(WinnerCount[[x]]))]))), horiz = TRUE, las = 1, cex.names = 0.5, col = viridis::magma(10), main = "Overall least predicted results", xlab = "Number of wins predicted", xlim=range(pretty(c(0, 3), n = 3)))
 ```
 
-Specifically, how many times does each player think the home nations will win in the group stage  (more teams available on request)? And how many boring draws do people think we'll suffer?
+More specifically, how many times does each player think the home nations will win in the group stage  (more teams available on request)? And how many boring draws do people think we'll suffer through?
 
 ```{r specificTeams, fig.show='hold', warning=FALSE}
 par(mar=c(7,4,4,4))
@@ -182,15 +182,12 @@ heatmaply(ResultsMat,
         xlab = "", ylab = "", 
         main = "",
         grid_color = "white",
-        grid_width = 0.00001,
-        titleX = FALSE,
-        branches_lwd = 0.1,
+        grid_size = 0.0001,
         fontsize_row = 5, fontsize_col = 5,
         labCol = colnames(ResultsMat),
         labRow = ResultsMat$Game,
         colors = c("lightgrey", "yellow", "green"),
         label_names = c("Game", "Player", "Points"),
-        heatmap_layers = theme(axis.line=element_blank())
         )
 ```
 
