@@ -159,9 +159,9 @@ Hover over each tile for more information (might not work on phones). Green = Co
 
 ```{r indepthresults, message=FALSE, warning=FALSE}
 #create matrix with points
-ResultsMat<- ResultsSoFar #use date ordered fixtures
-ResultsMat<- cbind(ResultsMat, Game = paste(ResultsMat$...3, "-", ResultsMat$...6)) #create a column combining the match teams into one
-ResultsMat<- ResultsMat[,-c(2:5)] #remove useless info
+#ResultsMat<- ResultsSoFar #use date ordered fixtures
+ResultsMat<- data.frame(cbind(Game = paste(Results$CorrectResults$Home, "-", Results$CorrectResults$Away))) #create a column combining the match teams into one
+#ResultsMat<- ResultsMat[,-c(2:5)] #remove useless info
 
 #points need to be recalculated to include NAs (fixtures yet to be played)
 TrackerScores<- lapply(names(Results[2:length(Results)]), function(x) unlist(lapply(1:nrow(Results$CorrectResults[Results$CorrectResults$HomeScore,]), function(row) ifelse(identical(Results[[1]][[row,2]], Results[[x]][[row,2]]) & identical(Results[[1]][[row,3]], Results[[x]][[row,3]]), 3, ifelse(identical(Results[[1]][[row,5]], Results[[x]][[row,5]]), 1, ifelse(is.na(Results[[1]][[row,5]]), NA, 0))))))
@@ -170,7 +170,6 @@ names(TrackerScores)<- names(Results[2:length(Results)]) #rename using player na
 for(P in names(TrackerScores)){
 ResultsMat<- cbind(ResultsMat, TrackerScores[[P]])
 } #bind all results (could be adapted to use apply functions)
-ResultsMat[1]<- NULL #remove dates
 colnames(ResultsMat)<- c("Game", names(TrackerScores))
 rownames(ResultsMat)<- ResultsMat$Game
 ResultsMat[1]<- NULL #for ease of plotting, change match descriptor to rownames then remove "Game" column
