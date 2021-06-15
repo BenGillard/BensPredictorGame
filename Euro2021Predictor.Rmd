@@ -130,19 +130,19 @@ More specifically, how many times does each player think the home nations will w
 ```{r specificTeams, fig.show='hold', warning=FALSE}
 par(mar=c(7,4,4,4))
 #england wins
-barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "England"), USE.NAMES = TRUE), main = "Predicted number of England Wins", col = c("red", "white"), las = 2, cex.names = 0.7)
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "England"), USE.NAMES = TRUE), main = "Predicted number of England Wins", col = c("red", "white"), las = 2, cex.names = 0.7, ylim = c(0,3), yaxp=c(0, 3, 3))
 abline(h = sum(Results$CorrectResults[["Result"]] == "England"), lty = 2, col = "black")
 
 #scotland wins
-barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Scotland"), USE.NAMES = TRUE), main = "Predicted number of Scotland Wins", col = c("blue", "white"), las = 2, cex.names = 0.7)
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Scotland"), USE.NAMES = TRUE), main = "Predicted number of Scotland Wins", col = c("blue", "white"), las = 2, cex.names = 0.7, ylim = c(0,3), yaxp=c(0, 3, 3))
 abline(h = sum(Results$CorrectResults[["Result"]] == "Scotland"), lty = 2, col = "black")
 
 #Wales wins
-barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Wales"), USE.NAMES = TRUE), main = "Predicted number of Wales Wins", col = c("red", "green"), las = 2, cex.names = 0.7)
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Wales"), USE.NAMES = TRUE), main = "Predicted number of Wales Wins", col = c("red", "green"), las = 2, cex.names = 0.7, ylim = c(0,3), yaxp=c(0, 3, 3))
 abline(h = sum(Results$CorrectResults[["Result"]] == "Wales"), lty = 2, col = "black")
 
 #Poland wins
-barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Poland"), USE.NAMES = TRUE), main = "Predicted number of Poland Wins", col = c("white", "red"), las = 2, cex.names = 0.7)
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Poland"), USE.NAMES = TRUE), main = "Predicted number of Poland Wins", col = c("white", "red"), las = 2, cex.names = 0.7, ylim = c(0,3), yaxp=c(0, 3, 3))
 abline(h = sum(Results$CorrectResults[["Result"]] == "Poland"), lty = 2, col = "black")
 
 #draws
