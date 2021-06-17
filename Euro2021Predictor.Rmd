@@ -78,6 +78,8 @@ Go to [Results Tracker] for a more in depth look at which games scored you point
 
 #Leaderboard
 
+How things stand after `r sum(!is.na(ResultsSoFar[,3]))` games out of `r nrow(Results$RandomControlEntry)`.
+
 ```{r Leaderboard, message=FALSE, warning=FALSE}
 LeaderBoard<- data.frame(Player = names(Scores), Points = unlist(lapply(Scores, sum)), CorrectScore = unlist(lapply(Scores, function(x) sum(x == 3))), CorrectResult = unlist(lapply(Scores, function(x) sum(x == 1))), row.names = NULL)
 
