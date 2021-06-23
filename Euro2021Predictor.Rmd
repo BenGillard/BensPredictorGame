@@ -152,7 +152,7 @@ barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][[
 abline(h = sum(Results$CorrectResults[["Result"]] == "Draw"), lty = 2, col = "black")
 
 #total goals
-barplot(sapply(names(Results[1:length(Results)]), function(x) sum(sum(as.numeric(Results[[x]][["HomeScore"]], na.rm = TRUE)), sum(as.numeric(Results[[x]][["AwayScore"]]), na.rm = TRUE), na.rm = TRUE), USE.NAMES = TRUE), main = "Predicted number of Goals (Total)", col = viridis::viridis(length(Results)), las = 2, cex.names = 0.7)
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(sum(as.numeric(Results[[x]][["HomeScore"]]), na.rm = TRUE), sum(as.numeric(Results[[x]][["AwayScore"]]), na.rm = TRUE), na.rm = TRUE), USE.NAMES = TRUE), main = "Predicted number of Goals (Total)", col = viridis::viridis(length(Results)), las = 2, cex.names = 0.7)
 ```
 
 
