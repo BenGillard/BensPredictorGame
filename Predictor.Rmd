@@ -260,6 +260,7 @@ kbl(Euro2024, caption = "Euro 2024", align = "l") %>% kable_classic(html_font = 
 
 ```
 
+<<<<<<< HEAD
 ```{r github}
 #TO UPLOAD TO GITHUB
 #open Predictor.rproj, this is the project file which is already linked to my github account and will allow upload directly from Rstudio
@@ -269,6 +270,8 @@ kbl(Euro2024, caption = "Euro 2024", align = "l") %>% kable_classic(html_font = 
 ```
 
 
+=======
+>>>>>>> 38de07850843278800d6808522ec76df62a5c932
 ```{r ExtraBits}
 #EXTRA BITS TO INCLUDE NEXT TIME AROUND
   #Automatically calculate England goals because I keep forgetting to update that box.
@@ -292,4 +295,8 @@ kbl(Euro2024, caption = "Euro 2024", align = "l") %>% kable_classic(html_font = 
 
   # On github: Update link for entry spreadsheet
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 38de07850843278800d6808522ec76df62a5c932
 ```
