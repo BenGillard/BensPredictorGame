@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = FALSE, tidy = TRUE)
 ```{r FormatData, message=FALSE, warning=FALSE}
 library(tidyverse)
 #read in real life results
-TrueResults<- readxl::read_excel("PredictorTrueResults.xlsm")[7:43, 5:8] #change dimensions depending on number of games
+TrueResults<- readxl::read_excel("PredictorTrueResults.xlsm")[7:42, 5:8] #change dimensions depending on number of games
 colnames(TrueResults)<- c("Home", "HomeScore", "AwayScore", "Away")
 TrueResults<- cbind(TrueResults, Result = ifelse(TrueResults$HomeScore == TrueResults$AwayScore, "Draw", ifelse(TrueResults$HomeScore > TrueResults$AwayScore, TrueResults$Home, TrueResults$Away))) #result information
 AllPreds<- list(CorrectResults = TrueResults) #seed list so player predictions can be added
@@ -36,7 +36,7 @@ entries<- list.files("Entries/", full.names = TRUE)
 for(file in entries){
 predictionsRoot<- readxl::read_excel(file) #change to file
 player<- gsub(" ", "", as.character(predictionsRoot[32,12]),  fixed = TRUE)
-predictions<- predictionsRoot[7:43, 5:8] #change dimensions depending on number of games
+predictions<- predictionsRoot[7:42, 5:8] #change dimensions depending on number of games
 colnames(predictions)<- c("Home", "HomeScore", "AwayScore", "Away")
 predictions<- cbind(predictions, Result = ifelse(predictions$HomeScore == predictions$AwayScore, "Draw", ifelse(predictions$HomeScore > predictions$AwayScore, predictions$Home, predictions$Away))) #result information
 AllPreds<- append(AllPreds, list(predictions)) #append player's predictions to list seeded by correct results
@@ -79,7 +79,7 @@ Go to [Results Tracker] for a more in depth look at which games scored you point
 
 ```{r resultssofar, message=FALSE, warning=FALSE}
 #date information
-ResultsSoFar<- readxl::read_excel("PredictorTrueResults.xlsm")[7:43, c(3,5:8)] #change depending on the number of fixtures
+ResultsSoFar<- readxl::read_excel("PredictorTrueResults.xlsm")[7:42, c(3,5:8)] #change depending on the number of fixtures
 colnames(ResultsSoFar)<- c("Date", "Home", "HomeScore", "AwayScore", "Away")
 ResultsSoFar$Date<- gsub(x = ResultsSoFar$Date, pattern = "Nov ", replacement = "11-")
 ResultsSoFar$Date<- gsub(x = ResultsSoFar$Date, pattern = "Dec ", replacement = "12-") %>% as.Date(format = "%m-%d") #get rid of days and reformat
@@ -260,7 +260,7 @@ kbl(Euro2024, caption = "Euro 2024", align = "l") %>% kable_classic(html_font = 
 
 ```
 
-<<<<<<< HEAD
+
 ```{r github}
 #TO UPLOAD TO GITHUB
 #open Predictor.rproj, this is the project file which is already linked to my github account and will allow upload directly from Rstudio
@@ -270,8 +270,6 @@ kbl(Euro2024, caption = "Euro 2024", align = "l") %>% kable_classic(html_font = 
 ```
 
 
-=======
->>>>>>> 38de07850843278800d6808522ec76df62a5c932
 ```{r ExtraBits}
 #EXTRA BITS TO INCLUDE NEXT TIME AROUND
   #Automatically calculate England goals because I keep forgetting to update that box.
@@ -294,9 +292,4 @@ kbl(Euro2024, caption = "Euro 2024", align = "l") %>% kable_classic(html_font = 
   # In rmd script: change import dimensions depending on the number of fixtures
 
   # On github: Update link for entry spreadsheet
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 38de07850843278800d6808522ec76df62a5c932
 ```
