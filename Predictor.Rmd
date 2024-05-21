@@ -170,6 +170,10 @@ abline(h = sum(Results$CorrectResults[["Result"]] == "England"), lty = 2, col = 
 barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Wales", na.rm = TRUE), USE.NAMES = TRUE), main = "Predicted number of Wales Wins", col = c("red", "green"), las = 2, cex.names = 0.7, ylim = c(0,3), yaxp=c(0, 3, 3))
 abline(h = sum(Results$CorrectResults[["Result"]] == "Wales"), lty = 2, col = "black")
 
+#Scotland wins
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Scotland", na.rm = TRUE), USE.NAMES = TRUE), main = "Predicted number of Scotland Wins", col = c("white", "blue"), las = 2, cex.names = 0.7, ylim = c(0,3), yaxp=c(0, 3, 3))
+abline(h = sum(Results$CorrectResults[["Result"]] == "Scotland"), lty = 2, col = "black")
+
 #Poland wins
 barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Poland", na.rm = TRUE), USE.NAMES = TRUE), main = "Predicted number of Poland Wins", col = c("white", "red"), las = 2, cex.names = 0.7, ylim = c(0,3), yaxp=c(0, 3, 3))
 abline(h = sum(Results$CorrectResults[["Result"]] == "Poland"), lty = 2, col = "black")
@@ -302,3 +306,5 @@ kbl(Euro2024, caption = "Euro 2024", align = "l") %>% kable_classic(html_font = 
 
   # Republish ResultsApp.R once all entries have been submitted
 ```
+
+This webpage and the predictor game is maintained by Ben Gillard. If you spot any bugs or have any ideas for improvements please contact me at benspredictorgame@gmail.com
