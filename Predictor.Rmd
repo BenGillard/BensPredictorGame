@@ -1,0 +1,287 @@
+---
+title: "Euro 2024 Predictor"
+knit: (function(input_file, encoding) {
+  out_dir <- 'docs';
+  rmarkdown::render(input_file,
+ encoding=encoding,
+ output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
+author: "Gillard BT"
+date: "Updated: `r Sys.Date()`"
+output: 
+  html_document: 
+    toc: yes
+    toc_depth: 4
+    theme: cerulean
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, tidy = TRUE)
+```
+
+```{r FormatData, message=FALSE, warning=FALSE}
+library(tidyverse)
+#read in real life results
+TrueResults<- readxl::read_excel("PredictorTrueResults.xlsm")[7:43, 5:8] #change dimensions depending on number of games
+colnames(TrueResults)<- c("Home", "HomeScore", "AwayScore", "Away")
+TrueResults<- cbind(TrueResults, Result = ifelse(TrueResults$HomeScore == TrueResults$AwayScore, "Draw", ifelse(TrueResults$HomeScore > TrueResults$AwayScore, TrueResults$Home, TrueResults$Away))) #result information
+AllPreds<- list(CorrectResults = TrueResults) #seed list so player predictions can be added
+
+#get predictions from every player (use loop calling all files in Entries directory)
+entries<- list.files("Entries/", full.names = TRUE)
+for(file in entries){
+predictionsRoot<- readxl::read_excel(file) #change to file
+player<- gsub(" ", "", as.character(predictionsRoot[32,12]),  fixed = TRUE)
+predictions<- predictionsRoot[7:43, 5:8] #change dimensions depending on number of games
+colnames(predictions)<- c("Home", "HomeScore", "AwayScore", "Away")
+predictions<- cbind(predictions, Result = ifelse(predictions$HomeScore == predictions$AwayScore, "Draw", ifelse(predictions$HomeScore > predictions$AwayScore, predictions$Home, predictions$Away))) #result information
+AllPreds<- append(AllPreds, list(predictions)) #append player's predictions to list seeded by correct results
+names(AllPreds)[length(AllPreds)]<- player #rename list with player name
+}
+
+saveRDS(object = AllPreds, "AllResults.RDS")
+
+AllPreds<- readRDS(file = "AllResults.RDS") #temporary file until all entries have been submitted. Remove line after first game.
+
+Results<- AllPreds #Renaming because I'd originally saved and reimported results so all code below is written for the results object
+```
+
+```{r ImportResults}
+#loop over each row?
+  #cbind points to each player? with lapply?
+#unlist(lapply(names(Results[2:length(Results)]), function(x) identical(Results[[1]][[1]], Results[[x]][[1]]))) #check format is identical by checking home team names
+
+#successful points vector for one player (first player in the Results list object)
+#unlist(lapply(1:nrow(Results$CorrectResults[!is.na(Results$CorrectResults$HomeScore),]), function(row) ifelse(identical(Results[[1]][[row,2]], Results[[2]][[row,2]]) & identical(Results[[1]][[row,3]], Results[[2]][[row,3]]), 3, ifelse(identical(Results[[1]][[row,5]], Results[[2]][[row,5]]), 1, 0))))
+
+Scores<- lapply(names(Results[2:length(Results)]), function(x) unlist(lapply(rownames(Results$CorrectResults[!is.na(Results$CorrectResults$HomeScore),]), function(row) ifelse(identical(Results[[1]][[row,2]], Results[[x]][[row,2]]) & identical(Results[[1]][[row,3]], Results[[x]][[row,3]]), 3, ifelse(identical(Results[[1]][[row,5]], Results[[x]][[row,5]]), 1, 0)))))
+
+names(Scores)<- names(Results[2:length(Results)])
+```
+
+**Welcome to the Euro 2024 Predictor Championship!** The aim of the game is simple, predict the scores for all of the group stage games at this year's tournament. Each correct *score* earns 3 points. Each correct *result* earns 1 point.
+
+**Follow this [link](https://github.com/BenGillard/Qatar2022Predictor/blob/main/Predictor.xlsm?raw=true) to download the entry spreadsheet.** Please send the completed spreadsheet file with the subject line "Predictor 2024" to benspredictorgame@gmail.com. Then forward to all your friends so they can get involved too. Deadline is Tuesday 11th November ahead of the first fixture on 14th June so get your entry in quick!
+
+**Each entry costs £5 so please follow the instructions on how to pay that you'll receive after submitting your spreadsheet.**
+
+We have **`r length(Results)-2` players** involved so we have a healthy kitty to pay out for the **top 5 players. £`r round(x = (length(Results)-2)*5*0.45, digits = 2)` goes to the top dog. £`r round(x = (length(Results)-2)*5*0.25, digits = 2)` for the top loser. £`r round(x = (length(Results)-2)*5*0.15, digits = 2)` for the best of the rest. And £`r round(x = (length(Results)-2)*5*0.075, digits = 2)` for 4th and 5th places.**
+
+On the [Leaderboard] you'll see an extra player called *RandomControlEntry* in <span style="color: red;">red</span>. These predictions were generated randomly using the macro included in the spreadsheet. So if you have fewer points than *RandomControlEntry*, any thought you put into your entry was an utter waste of time. 
+
+Go to [Results Tracker] for a more in depth look at which games scored you points.
+
+# Results so far
+
+```{r resultssofar, message=FALSE, warning=FALSE}
+#date information
+ResultsSoFar<- readxl::read_excel("PredictorTrueResults.xlsm")[7:43, c(3,5:8)] #change depending on the number of fixtures
+colnames(ResultsSoFar)<- c("Date", "Home", "HomeScore", "AwayScore", "Away")
+ResultsSoFar$Date<- gsub(x = ResultsSoFar$Date, pattern = "Nov ", replacement = "11-")
+ResultsSoFar$Date<- gsub(x = ResultsSoFar$Date, pattern = "Dec ", replacement = "12-") %>% as.Date(format = "%m-%d") #get rid of days and reformat
+ResultsSoFar<- ResultsSoFar[order(ResultsSoFar$Date),]
+library(kableExtra)
+ResultsSoFar[!is.na(ResultsSoFar[,3]),] %>% kbl(caption = "Euro 2024 Results so far", align = "c", row.names = FALSE, col.names = NULL, linesep = "") %>% kable_classic(html_font = "Cambria") %>% kable_styling("striped", font_size = 10)
+```
+
+# Leaderboard
+
+How things stand after **`r sum(!is.na(ResultsSoFar[,3]))` games out of `r nrow(Results$RandomControlEntry)`**. At the end of the game (Match Day 36 on 26th June 2024), winners will be contacted by email for their details so they can receive their hard fought winnings.
+
+Correct games shows how many games you have scored points from (total correct scores and results).
+
+```{r Leaderboard, message=FALSE, warning=FALSE}
+LeaderBoard<- data.frame(Player = names(Scores), Points = unlist(lapply(Scores, sum)), CorrectScore = unlist(lapply(Scores, function(x) sum(x == 3))), CorrectResult = unlist(lapply(Scores, function(x) sum(x == 1))), row.names = NULL)
+
+LeaderBoard<- cbind(LeaderBoard, CorrectGames = LeaderBoard$CorrectScore + LeaderBoard$CorrectResult)
+
+LeaderBoard<- LeaderBoard[order(LeaderBoard$Points, LeaderBoard$CorrectScore, decreasing = TRUE),]
+rownames(LeaderBoard)<- 1:nrow(LeaderBoard)
+
+#Table of Champions (Coloured rows indicate money winners)
+
+kbl(LeaderBoard, caption = "Table of Champions", align = "l", row.names = TRUE) %>% kable_classic(html_font = "Cambria") %>%  row_spec(1, bold = T, background = "#c9b037") %>% row_spec(2, bold = T, background = "#b4b4b4") %>% row_spec(3, bold = T, background = "#ad8a56") %>% row_spec(4:5, bold = T, background = "#3CB371") %>% row_spec(which(LeaderBoard$Player == "RandomControlEntry"), italic = T, color = "red") %>% column_spec(column = 3, border_left = TRUE, border_right = TRUE)
+```
+
+> When 2 players have the same points tally, correct scores are taken into account. If players are still equal, the tie break question "How many total goals (including knockout games but excluding penalty shoot outs) will England score at Euro 2024?" will come into play. Closest wins.
+
+**I've set up a Euros Predictor Whatsapp group. It's the best place to gloat/cry about your guesses. Click [here](https://chat.whatsapp.com/DlxhlOMRrhD1AbIVlo6Tk6) to join the group. Or scan the QR code below.**
+
+```{r WhatsappQR}
+knitr::include_graphics("whatsappQR.jpg")
+```
+
+## England Goals (tie breaker)
+
+Tracks the tie break question of how many goals England will score. The TrueGoals are updated after every [England game](https://www.youtube.com/watch?v=RJqimlFcJsM).
+
+```{r englandGoals, message=FALSE, warning=FALSE}
+par(mar=c(7,4,4,4))
+TrueGoals<- as.numeric(readxl::read_excel("PredictorTrueResults.xlsm")[35,14])
+AllGoals<- list(TrueGoals = TrueGoals) #seed list so player predictions can be added
+for(file in entries){
+predictionsRoot<- readxl::read_excel(file) #change to file
+player<- gsub(" ", "", as.character(predictionsRoot[32,12]),  fixed = TRUE)
+EngGoals<- as.numeric(predictionsRoot[35,14])
+#result information
+AllGoals<- append(AllGoals, list(EngGoals)) #append player's predictions to list seeded by correct results
+names(AllGoals)[length(AllGoals)]<- player #rename list with player name
+}
+barplot(unlist(AllGoals), main = "Tie Breaker: England Goals scored", col = c("red", "white"), las = 2, cex.names = 0.7)
+abline(h = AllGoals$TrueGoals, lty = 2, col = "red")
+```
+
+# Hypothetical Euros
+
+Who do we, as a collective of Mystic Megs, predict will be the winners and losers in the group stage? This plot shows how many times each team has been predicted to win a match in the group stages.
+
+```{r IfwePredicted, fig.show='hold'}
+WinnerCount<- sapply(names(Results[2:length(Results)]), function(x) summary(as.factor(Results[[x]][["Result"]])), USE.NAMES = TRUE)
+
+barplot(sort(sapply(unique(Results$CorrectResults$Home), function (x) sum(grepl(x = names(unlist(WinnerCount)), pattern = x)))), horiz = TRUE, las = 1, cex.names = 0.5, col = viridis::rocket(24), main = "Total (all players combined) predicted Wins for each team", xlab = "Number of wins predicted", xlim=range(pretty(c(0, max(sapply(unique(Results$CorrectResults$Home), function (x) sum(grepl(x = names(unlist(WinnerCount)), pattern = x)))+1)))))
+
+#top predicted result
+#barplot(table(unlist(lapply(names(WinnerCount), function(x) names(WinnerCount[[x]])[which(WinnerCount[[x]] == max(WinnerCount[[x]]))]))), horiz = TRUE, las = 1, cex.names = 0.5, col = viridis::rocket(10), main = "Overall most predicted results", xlab = "Number of wins predicted", xlim=range(pretty(c(0, 10))))
+
+#bottom predicted result
+#barplot(table(unlist(lapply(names(WinnerCount), function(x) names(WinnerCount[[x]])[which(WinnerCount[[x]] == min(WinnerCount[[x]]))]))), horiz = TRUE, las = 1, cex.names = 0.5, col = viridis::magma(10), main = "Overall least predicted results", xlab = "Number of wins predicted", xlim=range(pretty(c(0, 3), n = 3)))
+```
+
+More specifically, how many times does each player think the home nations will win in the group stage  (more teams available on request)? And how many boring draws do people think we'll suffer through?
+
+```{r specificTeams, fig.show='hold', warning=FALSE, out.width='50%'}
+par(mar=c(7,4,4,4))
+#england wins
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "England", na.rm = TRUE), USE.NAMES = TRUE), main = "Predicted number of England Wins", col = c("red", "white"), las = 2, cex.names = 0.7, ylim = c(0,3), yaxp=c(0, 3, 3))
+abline(h = sum(Results$CorrectResults[["Result"]] == "England"), lty = 2, col = "black")
+
+#Wales wins
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Wales", na.rm = TRUE), USE.NAMES = TRUE), main = "Predicted number of Wales Wins", col = c("red", "green"), las = 2, cex.names = 0.7, ylim = c(0,3), yaxp=c(0, 3, 3))
+abline(h = sum(Results$CorrectResults[["Result"]] == "Wales"), lty = 2, col = "black")
+
+#Poland wins
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Poland", na.rm = TRUE), USE.NAMES = TRUE), main = "Predicted number of Poland Wins", col = c("white", "red"), las = 2, cex.names = 0.7, ylim = c(0,3), yaxp=c(0, 3, 3))
+abline(h = sum(Results$CorrectResults[["Result"]] == "Poland"), lty = 2, col = "black")
+
+#draws
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(Results[[x]][["Result"]] == "Draw", na.rm = TRUE), USE.NAMES = TRUE), main = "Predicted number of Draws", col = viridis::turbo(length(Results)), las = 2, cex.names = 0.7)
+abline(h = sum(Results$CorrectResults[["Result"]] == "Draw"), lty = 2, col = "black")
+
+#total goals
+barplot(sapply(names(Results[1:length(Results)]), function(x) sum(sum(as.numeric(Results[[x]][["HomeScore"]]), na.rm = TRUE), sum(as.numeric(Results[[x]][["AwayScore"]]), na.rm = TRUE), na.rm = TRUE), USE.NAMES = TRUE), main = "Predicted number of Goals (Total)", col = viridis::viridis(length(Results)), las = 2, cex.names = 0.7)
+```
+
+
+# Results Tracker
+
+This Results Tracker has a bit more depth than the [Leaderboard]. It shows what points everyone has scored for each game.
+
+Hover over each tile for more information (might not work on phones). Green = Correct Score (3 points), Yellow = Correct Result (1 point), Grey = Wrong! (nil pois).
+
+```{r indepthresults, message=FALSE, warning=FALSE, out.width='100%'}
+#create matrix with points
+#ResultsMat<- ResultsSoFar #use date ordered fixtures
+ResultsMat<- data.frame(cbind(Game = paste(Results$CorrectResults$Home, "-", Results$CorrectResults$Away))) #create a column combining the match teams into one
+#ResultsMat<- ResultsMat[,-c(2:5)] #remove useless info
+ScoresMat<- ResultsMat
+
+#points need to be recalculated to include NAs (fixtures yet to be played)
+TrackerScores<- lapply(names(Results[2:length(Results)]), function(x) unlist(lapply(1:nrow(Results$CorrectResults[Results$CorrectResults$HomeScore,]), function(row) ifelse(identical(Results[[1]][[row,2]], Results[[x]][[row,2]]) & identical(Results[[1]][[row,3]], Results[[x]][[row,3]]), 3, ifelse(identical(Results[[1]][[row,5]], Results[[x]][[row,5]]), 1, ifelse(is.na(Results[[1]][[row,5]]), NA, 0))))))
+names(TrackerScores)<- names(Results[2:length(Results)]) #rename using player names
+
+
+for(P in names(TrackerScores)){
+ResultsMat<- cbind(ResultsMat, TrackerScores[[P]])
+} #bind all results (could be adapted to use apply functions)
+colnames(ResultsMat)<- c("Game", names(TrackerScores))
+rownames(ResultsMat)<- ResultsMat$Game
+ResultsMat[1]<- NULL #for ease of plotting, change match descriptor to rownames then remove "Game" column
+
+#for scores matrix to be included in hover text
+for(P in names(Results)){
+ScoresMat<- cbind(ScoresMat, paste0("Guess: ",Results[[P]][,2], "-", Results[[P]][,3]))
+} #no need to correct dim names because ResultsMat is the core matrix
+ScoresMat[1:2]<- NULL #first column is game and second column is correct results so need to remove for heatmap
+
+library(heatmaply) #interactive heatmap with hover information
+heatmaply(ResultsMat, 
+        dendrogram = "none",
+        xlab = "", ylab = "", 
+        main = "",
+        grid_color = "white",
+        grid_size = 0.0001,
+        fontsize_row = 5, fontsize_col = 5,
+        labCol = colnames(ResultsMat),
+        labRow = ResultsMat$Game,
+        colors = c("lightgrey", "yellow", "green"),
+        label_names = c("Game", "Player", "Points"),
+        hide_colorbar = TRUE,
+        custom_hovertext = ScoresMat
+        )
+```
+
+# Entry reminder
+
+If you've forgotten what you entered or want to be nosy and see what your rival predicted for an upcoming game, you can find all entry data in the app below:
+
+```{r shinyoutput, echo=FALSE, out.width='100%'}
+knitr::include_app("https://bengillard.shinyapps.io/PredictorGame/")
+```
+
+
+# Predictor Hall of Fame
+
+A small internet shrine for those that have blazed a trail of glory in previous predictor games.
+
+```{r HallofFame}
+#Euros 2024
+Euro2024<- data.frame(Position = c(1,2,3), Player = c("Probably", "Not", "You"))
+
+#World Cup 2022
+WC2022<- data.frame(Position = c(1,2,3), Player = c("Jon Williams", "Paul Newcomb", "Lewis Evans"))
+
+#Euro 2020
+Euro2020<- data.frame(Position = c(1,2,3), Player = c("Paul Newcomb", "Lee Gammon", "Martin Newcomb"))
+
+#World Cup 2018
+WC2018<- data.frame(Position = c(1,2,3), Player = c("Phil Griffiths", "Polly Wallace", "Justyna"))
+
+kbl(WC2018, caption = "Worlc Cup 2018", align = "l") %>% kable_classic(html_font = "Cambria") %>%  row_spec(1, bold = T, background = "#c9b037") %>% row_spec(2, bold = T, background = "#b4b4b4") %>% row_spec(3, bold = T, background = "#ad8a56")
+
+kbl(Euro2020, caption = "Euro 2020", align = "l") %>% kable_classic(html_font = "Cambria") %>%  row_spec(1, bold = T, background = "#c9b037") %>% row_spec(2, bold = T, background = "#b4b4b4") %>% row_spec(3, bold = T, background = "#ad8a56")
+
+kbl(WC2022, caption = "World Cup 2022", align = "l") %>% kable_classic(html_font = "Cambria") %>%  row_spec(1, bold = T, background = "#c9b037") %>% row_spec(2, bold = T, background = "#b4b4b4") %>% row_spec(3, bold = T, background = "#ad8a56")
+
+kbl(Euro2024, caption = "Euro 2024", align = "l") %>% kable_classic(html_font = "Cambria") %>%  row_spec(1, bold = T, background = "#c9b037") %>% row_spec(2, bold = T, background = "#b4b4b4") %>% row_spec(3, bold = T, background = "#ad8a56")
+
+```
+
+```{r ExtraBits}
+#EXTRA BITS TO INCLUDE NEXT TIME AROUND
+  #Automatically calculate England goals because I keep forgetting to update that box.
+  #Hypothetical Tourney - Everyone's predicted group winners. Bit of complex coding required. Predicted points too?
+      #kable table for each group
+  #Is there an API or something that results can be extracted from so everything updates automatically?
+
+#API in R tutorial: https://www.dataquest.io/blog/r-api-tutorial/
+  #https://statisticsglobe.com/api-in-r#looping-multiple-api-calls
+
+
+
+#THINGS TO CHANGE EACH YEAR
+  # In spreadsheet: Euro/Worldcup and date to appropriate and logo picture
+  # In spreadsheet: Fixture list (get from internet spreadsheet if available)
+  # In spreadsheet: macro cells to fill
+
+  # In rmd script: title and blurb at start, change to current year etc
+  # In rmd script: change whatsapp group name on picture (can just reuse the same code each time)
+  # In rmd script: change import dimensions depending on the number of fixtures
+
+  # On github: Update link for entry spreadsheet
+
+
+```
