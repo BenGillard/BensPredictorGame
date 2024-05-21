@@ -65,11 +65,13 @@ names(Scores)<- names(Results[2:length(Results)])
 
 **Welcome to the Euro 2024 Predictor Championship!** The aim of the game is simple, predict the scores for all of the group stage games at this year's tournament. Each correct *score* earns 3 points. Each correct *result* earns 1 point.
 
-**Follow this [link](https://github.com/BenGillard/Qatar2022Predictor/blob/main/Predictor.xlsm?raw=true) to download the entry spreadsheet.** Please send the completed spreadsheet file with the subject line "Predictor 2024" to benspredictorgame@gmail.com. Then forward to all your friends so they can get involved too. Deadline is Tuesday 11th November ahead of the first fixture on 14th June so get your entry in quick!
+**Follow this [link](https://github.com/BenGillard/BensPredictorGame/blob/main/Predictor.xlsm?raw=true) to download the entry spreadsheet.** Please send the completed spreadsheet file with the subject line "Predictor 2024" to benspredictorgame@gmail.com. Then forward to all your friends so they can get involved too. Deadline is Tuesday 11th November ahead of the first fixture on 14th June so get your entry in quick!
 
 **Each entry costs £5 so please follow the instructions on how to pay that you'll receive after submitting your spreadsheet.**
 
-We have **`r length(Results)-2` players** involved so we have a healthy kitty to pay out for the **top 5 players. £`r round(x = (length(Results)-2)*5*0.45, digits = 2)` goes to the top dog. £`r round(x = (length(Results)-2)*5*0.25, digits = 2)` for the top loser. £`r round(x = (length(Results)-2)*5*0.15, digits = 2)` for the best of the rest. And £`r round(x = (length(Results)-2)*5*0.075, digits = 2)` for 4th and 5th places.**
+Previous years have had up to 50 players so it is always a healthy kitty to play for. Although the bragging rights remain the most valuable prize.
+
+<!--We have **`r length(Results)-2` players** involved so we have a healthy kitty to pay out for the **top 5 players. £`r round(x = (length(Results)-2)*5*0.45, digits = 2)` goes to the top dog. £`r round(x = (length(Results)-2)*5*0.25, digits = 2)` for the top loser. £`r round(x = (length(Results)-2)*5*0.15, digits = 2)` for the best of the rest. And £`r round(x = (length(Results)-2)*5*0.075, digits = 2)` for 4th and 5th places.**-->
 
 On the [Leaderboard] you'll see an extra player called *RandomControlEntry* in <span style="color: red;">red</span>. These predictions were generated randomly using the macro included in the spreadsheet. So if you have fewer points than *RandomControlEntry*, any thought you put into your entry was an utter waste of time. 
 
