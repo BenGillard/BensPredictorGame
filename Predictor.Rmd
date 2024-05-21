@@ -75,14 +75,17 @@ On the [Leaderboard] you'll see an extra player called *RandomControlEntry* in <
 
 Go to [Results Tracker] for a more in depth look at which games scored you points.
 
+> These are test results to make sure everything is working properly! Once all entries have been submitted I will update the webpage.
+
 # Results so far
 
 ```{r resultssofar, message=FALSE, warning=FALSE}
 #date information
 ResultsSoFar<- readxl::read_excel("PredictorTrueResults.xlsm")[7:42, c(3,5:8)] #change depending on the number of fixtures
 colnames(ResultsSoFar)<- c("Date", "Home", "HomeScore", "AwayScore", "Away")
-ResultsSoFar$Date<- gsub(x = ResultsSoFar$Date, pattern = "Nov ", replacement = "11-")
-ResultsSoFar$Date<- gsub(x = ResultsSoFar$Date, pattern = "Dec ", replacement = "12-") %>% as.Date(format = "%m-%d") #get rid of days and reformat
+#ResultsSoFar$Date<- gsub(x = ResultsSoFar$Date, pattern = "Nov ", replacement = "11-")
+#ResultsSoFar$Date<- gsub(x = ResultsSoFar$Date, pattern = "Dec ", replacement = "12-") %>% as.Date(format = "%m-%d") #get rid of days and reformat
+ResultsSoFar$Date<- as.Date(x = as.numeric(ResultsSoFar$Date), origin = "1899-12-30")
 ResultsSoFar<- ResultsSoFar[order(ResultsSoFar$Date),]
 library(kableExtra)
 ResultsSoFar[!is.na(ResultsSoFar[,3]),] %>% kbl(caption = "Euro 2024 Results so far", align = "c", row.names = FALSE, col.names = NULL, linesep = "") %>% kable_classic(html_font = "Cambria") %>% kable_styling("striped", font_size = 10)
@@ -142,7 +145,9 @@ Who do we, as a collective of Mystic Megs, predict will be the winners and loser
 ```{r IfwePredicted, fig.show='hold'}
 WinnerCount<- sapply(names(Results[2:length(Results)]), function(x) summary(as.factor(Results[[x]][["Result"]])), USE.NAMES = TRUE)
 
-barplot(sort(sapply(unique(Results$CorrectResults$Home), function (x) sum(grepl(x = names(unlist(WinnerCount)), pattern = x)))), horiz = TRUE, las = 1, cex.names = 0.5, col = viridis::rocket(24), main = "Total (all players combined) predicted Wins for each team", xlab = "Number of wins predicted", xlim=range(pretty(c(0, max(sapply(unique(Results$CorrectResults$Home), function (x) sum(grepl(x = names(unlist(WinnerCount)), pattern = x)))+1)))))
+barplot(sort(sapply(unique(Results$CorrectResults$Home), function (x) sum(grepl(x = names(unlist(WinnerCount)), pattern = x)))), horiz = TRUE, las = 1, cex.names = 0.5, col = viridis::rocket(24), main = "Total (all players combined) predicted Wins for each team", xlab = "Number of wins predicted")
+
+#, xlim=range(pretty(c(0, max(sapply(unique(Results$CorrectResults$Home), function (x) sum(grepl(x = names(unlist(WinnerCount)), pattern = x)))+1))))
 
 #top predicted result
 #barplot(table(unlist(lapply(names(WinnerCount), function(x) names(WinnerCount[[x]])[which(WinnerCount[[x]] == max(WinnerCount[[x]]))]))), horiz = TRUE, las = 1, cex.names = 0.5, col = viridis::rocket(10), main = "Overall most predicted results", xlab = "Number of wins predicted", xlim=range(pretty(c(0, 10))))
@@ -292,4 +297,6 @@ kbl(Euro2024, caption = "Euro 2024", align = "l") %>% kable_classic(html_font = 
   # In rmd script: change import dimensions depending on the number of fixtures
 
   # On github: Update link for entry spreadsheet
+
+  # Republish ResultsApp.R once all entries have been submitted
 ```
