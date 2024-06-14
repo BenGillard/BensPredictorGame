@@ -33,6 +33,7 @@ AllPreds<- list(CorrectResults = TrueResults) #seed list so player predictions c
 
 #get predictions from every player (use loop calling all files in Entries directory)
 entries<- list.files("Entries/", full.names = TRUE)
+print(paste0("All entries are correctly formatted: ",length(entries) == sum(grepl(pattern = ".xlsm", x = entries)))) #test to check all files are in correct format
 for(file in entries){
 predictionsRoot<- readxl::read_excel(file) #change to file
 player<- gsub(" ", "", as.character(predictionsRoot[32,12]),  fixed = TRUE)
@@ -65,17 +66,21 @@ names(Scores)<- names(Results[2:length(Results)])
 
 **Welcome to the Euro 2024 Predictor Championship!** The aim of the game is simple, predict the scores for all of the group stage games at this year's tournament. Each correct *score* earns 3 points. Each correct *result* earns 1 point.
 
-**Follow this [link](https://github.com/BenGillard/BensPredictorGame/blob/main/Predictor.xlsm?raw=true) to download the entry spreadsheet.** Please send the completed spreadsheet file with the subject line "Predictor 2024" to benspredictorgame@gmail.com. Then forward to all your friends so they can get involved too. Deadline is Tuesday 11th November ahead of the first fixture on 14th June so get your entry in quick!
+**Follow this [link](https://github.com/BenGillard/BensPredictorGame/blob/main/Predictor.xlsm?raw=true) to download the entry spreadsheet.** Please send the completed spreadsheet file with the subject line "Predictor 2024" to benspredictorgame@gmail.com. Then forward to all your friends so they can get involved too. Deadline is 10pm on Tuesday 11th June ahead of the first fixture on 14th June so get your entry in quick!
 
 **Each entry costs £5 so please follow the instructions on how to pay that you'll receive after submitting your spreadsheet.**
 
-Previous years have had up to 50 players so it is always a healthy kitty to play for. Although the bragging rights remain the most valuable prize.
+<!--Previous years have had up to 50 players so it is always a healthy kitty to play for. Although the bragging rights remain the most valuable prize.-->
 
-<!--We have **`r length(Results)-2` players** involved so we have a healthy kitty to pay out for the **top 5 players. £`r round(x = (length(Results)-2)*5*0.45, digits = 2)` goes to the top dog. £`r round(x = (length(Results)-2)*5*0.25, digits = 2)` for the top loser. £`r round(x = (length(Results)-2)*5*0.15, digits = 2)` for the best of the rest. And £`r round(x = (length(Results)-2)*5*0.075, digits = 2)` for 4th and 5th places.**-->
+We have **`r length(Results)-2` players** involved so we have a healthy kitty to pay out for the **top 5 players. £`r round(x = (length(Results)-2)*5*0.45, digits = 2)` goes to the top dog. £`r round(x = (length(Results)-2)*5*0.25, digits = 2)` for the top loser. £`r round(x = (length(Results)-2)*5*0.15, digits = 2)` for the best of the rest. And £`r round(x = (length(Results)-2)*5*0.05, digits = 2)` for 4th, 5th, and 6th places.**
 
 On the [Leaderboard] you'll see an extra player called *RandomControlEntry* in <span style="color: red;">red</span>. These predictions were generated randomly using the macro included in the spreadsheet. So if you have fewer points than *RandomControlEntry*, any thought you put into your entry was an utter waste of time. 
 
 Go to [Results Tracker] for a more in depth look at which games scored you points.
+
+Forgot what you put for an upcoming game? Want to see what your bitter rival predicted too? Go to the [Entry Reminder] section and use the drop down to find full predictions for a specific player.
+
+To see players who have been immortalised by victory in previous tournaments, see the [Predictor Hall of Fame].
 
 > These are test results to make sure everything is working properly! Once all entries have been submitted I will update the webpage.
 
@@ -113,6 +118,251 @@ kbl(LeaderBoard, caption = "Table of Champions", align = "l", row.names = TRUE) 
 ```
 
 > When 2 players have the same points tally, correct scores are taken into account. If players are still equal, the tie break question "How many total goals (including knockout games but excluding penalty shoot outs) will England score at Euro 2024?" will come into play. Closest wins.
+
+```{r CUP, eval=FALSE, echo=FALSE}
+# NEW FOR 2024, THE PREDICTOR CUP
+
+#Your first 30 predictions may have been awful but there is still a chance to be a winner! Euro 2024 sees the arrival of the inaugural Predictor Cup.
+
+#Qualification for the cup is based on the three fixtures on the 22nd June (Georgia vs Czechia (Match 24), Turkiye vs Portugal (Match 23), and Belgium vs Romania (Match 22)). The top scoring players from these three fixtures will enter the cup (see Cup Qualifying table. Teams highlighted in green will enter the cup). Note that you cannot qualify for the cup with 0 points. If there is an uneven number of players, those that have scored well in the qualifying fixtures will recieve a bye in the first round. Your predictions for fixtures over the final days of the group stages will be your entry into the cup. You will be pitted against a random opponent to better their prediction. If you have matching points after the designated game, a second game on that day will be used. If it is still a draw, the closest number of goals predicted will decide the tie. If you come out on top you progress to the next round and so on until there is only one player left.
+
+#Qualifying day: 22nd June. Fixtures = Georgia vs Czechia (Match 24), Turkiye vs Portugal (Match 23), and Belgium vs Romania (Match 22).
+
+QualifyingPoints<- unlist(lapply(Scores, function(x) sum(x[22:24])))
+QualifyingGoals<- unlist(lapply(Results[-which(names(Results) %in% c("CorrectResults"))], function(x) abs(sum(as.numeric(Results$CorrectResults$HomeScore[22:24]), as.numeric(Results$CorrectResults$AwayScore[22:24])) - sum(as.numeric(x$HomeScore[22:24]), as.numeric(x$AwayScore[22:24])))))
+QualifyingPoints<- data.frame(Player = names(QualifyingPoints),
+                              QualifyingScore = QualifyingPoints,
+                              QualifyingGoalsDiff = QualifyingGoals)
+QualifyingPoints<- QualifyingPoints[order(QualifyingPoints$QualifyingScore, QualifyingPoints$QualifyingGoals, decreasing = TRUE),]
+Qualified<- QualifyingPoints[which(QualifyingPoints$QualifyingScore > 0),]
+
+kbl(QualifyingPoints, caption = "Cup Qualifying (Fixtures from 22nd June).", align = "l", row.names = TRUE) %>% kable_classic(html_font = "Cambria") %>% row_spec(Qualified, bold = T, background = "#3CB371") %>% column_spec(column = 3, border_left = TRUE, border_right = TRUE)
+
+set.seed(202406)
+draw1<- sample(1:length(Scores))
+length(draw1) #force to 32 teams
+
+#If there are over 32 teams use extra round 1
+Round1<- data.frame(Team1 = names(unlist(lapply(Scores[draw1[c(1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31)]], function(x) x[30]))),
+                    Score1 = unlist(lapply(Scores[draw1[c(1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31)]], function(x) x[30])),
+                    Score2 = unlist(lapply(Scores[draw1[c(2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32)]], function(x) x[30])),
+                    Team2 = names(unlist(lapply(Scores[draw1[c(2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32)]], function(x) x[30]))),row.names = NULL)
+
+Round1$winner <- ifelse(Round1$Score1 > Round1$Score2, yes = Round1$Team1,
+                        ifelse(Round1$Score1 < Round1$Score2, yes = Round1$Team2, no = paste(Round1$Team1,Round1$Team2, sep = ","))) #define which teams go through. If a draw, put teams into a decider fixture
+
+Round1
+
+#Match 25: Switzerland vs Germany (back up game = Match 26: Scotland vs Hungary). 16 teams
+Roundof16players<- Scores[names(Scores) %in% unlist(strsplit(paste0(Round1$winner, collapse = ","),split = ","))]
+Roundof16Draw<- sample(1:length(Scores))
+Roundof16<- data.frame(Team1 = names(unlist(lapply(Scores[Roundof16Draw[c(1,3,5,7,9,11,13,15)]], function(x) x[25]))),
+                    Score1 = unlist(lapply(Scores[Roundof16Draw[c(1,3,5,7,9,11,13,15)]], function(x) x[25])),
+                    Score2 = unlist(lapply(Scores[Roundof16Draw[c(2,4,6,8,10,12,14,16)]], function(x) x[25])),
+                    Team2 = names(unlist(lapply(Scores[Roundof16Draw[c(2,4,6,8,10,12,14,16)]], function(x) x[25]))),row.names = NULL)
+
+Roundof16$winner <- ifelse(Roundof16$Score1 > Roundof16$Score2, yes = Roundof16$Team1,
+                        ifelse(Roundof16$Score1 < Roundof16$Score2, yes = Roundof16$Team2, no = paste(Roundof16$Team1,Roundof16$Team2, sep = ",")))
+
+Roundof16
+
+#Match 28: Croatia vs Italy (back up game = Match 27: Albania vs Spain). 8 teams
+Quartersplayers<- Scores[names(Scores) %in% unlist(strsplit(paste0(Round1$winner, collapse = ","),split = ","))]
+QuartersDraw<- sample(1:length(Scores))
+Quarters<- data.frame(Team1 = names(unlist(lapply(Scores[QuartersDraw[c(1,3,5,7)]], function(x) x[28]))),
+                    Score1 = unlist(lapply(Scores[QuartersDraw[c(1,3,5,7)]], function(x) x[28])),
+                    Score2 = unlist(lapply(Scores[QuartersDraw[c(2,4,6,8)]], function(x) x[28])),
+                    Team2 = names(unlist(lapply(Scores[QuartersDraw[c(2,4,6,8)]], function(x) x[28]))),row.names = NULL)
+
+Quarters$winner <- ifelse(Quarters$Score1 > Quarters$Score2, yes = Quarters$Team1,
+                        ifelse(Quarters$Score1 < Quarters$Score2, yes = Quarters$Team2, no = paste(Quarters$Team1,Quarters$Team2, sep = ",")))
+
+Quarters
+
+#Match 32: France vs Poland (back up game = Match 29: England vs Slovenia). 4 teams
+Semiplayers<- Scores[names(Scores) %in% unlist(strsplit(paste0(Quarters$winner, collapse = ","),split = ","))]
+DrawSemis<- sample(1:length(Semiplayers))
+Semis<- data.frame(Team1 = names(unlist(lapply(Scores[DrawSemis[c(1,3)]], function(x) x[30]))),
+                    Score1 = unlist(lapply(Scores[DrawSemis[c(1,3)]], function(x) x[30])),
+                    Score2 = unlist(lapply(Scores[DrawSemis[c(2,4)]], function(x) x[30])),
+                    Team2 = names(unlist(lapply(Scores[DrawSemis[c(2,4)]], function(x) x[30]))),row.names = NULL)
+
+Semis$winner <- ifelse(Semis$Score1 > Semis$Score2, yes = Semis$Team1,
+                        ifelse(Semis$Score1 < Semis$Score2, yes = Semis$Team2, no = paste(Semis$Team1,Semis$Team2, sep = ",")))
+
+Semis
+
+#Match 33: Slovakia vs Romania (Back up game = Match 36: Czechia vs Turkiye). 2 teams
+Finalplayers<- Scores[names(Scores) %in% unlist(strsplit(paste0(Semis$winner, collapse = ","),split = ","))]
+drawFinal<- sample(1:length(Finalplayers))
+Final<- data.frame(Team1 = names(unlist(lapply(Finalplayers[DrawFinal[c(1)]], function(x) x[33]))),
+                    Score1 = unlist(lapply(Finalplayers[DrawFinal[c(1)]], function(x) x[33])),
+                    Score2 = unlist(lapply(Finalplayers[DrawFinal[c(2)]], function(x) x[33])),
+                    Team2 = names(unlist(lapply(Finalplayers[DrawFinal[c(2)]], function(x) x[33]))),row.names = NULL)
+
+Final$winner <- ifelse(Final$Score1 > Final$Score2, yes = Final$Team1,
+                        ifelse(Final$Score1 < Final$Score2, yes = Final$Team2, no = paste(Final$Team1,Final$Team2,sep = ",")))
+
+Final
+
+#add more testdata to run cup simulation.
+#Either work out a way to force a result each time (2x fixtures? ifelse?) or work out a way to incorporate uneven players (where there are draws and both players go through)
+#CHECK THE MATCH LINES UP WITH THE ACTUAL FIXTURE. FOR INSTANCE, MATCH 22 MAY NOT BE THE 22ND ELEMENT IN THE SCORES VECTOR.
+#If using a bracket graphic, the route to the final will have to be calculated before the first round of fixtures. A random draw each time would not fit with the bracket system. Alternative would be 
+```
+
+```{r CupBracket, eval=FALSE}
+#pinched and altered from the MMBracketR package
+
+plotBracket<- function (games = games){
+    games <- games/4
+    lineCoord <- getparams(games = games)
+    #regions <- c("Region X", "Region W", "Region Y", "Region Z", 
+     #   "Championship")
+    #xregion <- c(2.5, 2.5, 6.5, 6.5, 4.5)
+    #yregion <- c(0.5, 16.5, 0.5, 16.5, 17)
+    tournplot <- ggplot2::ggplot(data = lineCoord) + ggplot2::theme_void() + 
+        ggplot2::geom_segment(ggplot2::aes(x = x1, y = y1, xend = x2, 
+            yend = y2)) #+ ggplot2::annotate("text", x = x1, y = y1, label = names(Scores))
+    return(tournplot)
+}
+
+getparams<- function(games = games){
+ x1 <- c()
+  x2 <- c()
+  y1 <- c()
+  y2 <- c()
+
+  for(i in 0:(games)){
+
+    # Round 1
+    x1 <- append(x1, c(0, 0, 1, 10, 10, 9))
+    y1 <- append(y1, c(i*2+1, i*2+2, i*2+1, i*2+1, i*2+2, i*2+1))
+    x2 <- append(x2, c(1, 1, 1, 9, 9, 9))
+    y2 <- append(y2, c(i*2+1, i*2+2, i*2+2, i*2+1, i*2+2, i*2+2))
+
+    # Round 2
+    if(i%%2){
+
+      x1 <- append(x1, c(1, 1, 2, 9, 9, 8))
+      y1 <- append(y1, c(i*2-0.5, i*2+1.5, i*2-0.5, i*2-0.5, i*2+1.5, i*2-0.5))
+      x2 <- append(x2, c(2, 2, 2, 8, 8, 8))
+      y2 <- append(y2, c(i*2-0.5, i*2+1.5, i*2+1.5, i*2-0.5, i*2+1.5, i*2+1.5))
+
+    }
+
+    # Round 3
+    if(i%%4==0){
+
+      x1 <- append(x1, c(2, 2, 3, 8, 8, 7))
+      y1 <- append(y1, c(i*2+2.5, i*2+6.5, i*2+2.5, i*2+2.5, i*2+6.5, i*2+2.5))
+      x2 <- append(x2, c(3, 3, 3, 7, 7, 7))
+      y2 <- append(y2, c(i*2+2.5, i*2+6.5, i*2+6.5, i*2+2.5, i*2+6.5, i*2+6.5))
+
+    }
+
+    # Round 4
+    if(i%%8 ==0){
+
+      x1 <- append(x1, c(3, 3, 4, 4, 5, 7, 7, 6))
+      y1 <- append(y1, c(i*2+4.5, i*2+12.5, i*2+4.5, i*2+8.5, i*2+8.5, i*2+4.5, i*2+12.5, i*2+4.5))
+      x2 <- append(x2, c(4, 4, 4, 5, 6, 6, 6, 6))
+      y2 <- append(y2, c(i*2+4.5, i*2+12.5, i*2+12.5, i*2+8.5, i*2+8.5, i*2+4.5, i*2+12.5, i*2+12.5))
+
+    }
+  }
+  return(data.frame(cbind(x1, x2, y1, y2)))
+  }
+
+plotBracket(games = 32)
+
+#this only works for 32 teams. and I would have to work out how to annotate properly to use it.
+
+#populate labels
+legs<- data.frame(cbind(x1 = lineCoord$x1, y2 = lineCoord$y2, label = c("player1", "player2")))
+legs$x1<- as.numeric(legs$x1)
+legs$y2<- as.numeric(legs$y2)
+plotBracket(32) + geom_text(data = legs, aes(x = x1, y = y2, label = label, col = "blue"))
+
+plotBracket(32) + geom_text(aes(x = 10, y = 1, label = "test"))
+```
+```{r BracketTry2, eval=FALSE}
+first_evens <- function(x) {seq(from=2,to=2*x,length.out=x)}
+first_odds <- function(x) {seq(from=1,to=2*x-1,length.out=x)}
+
+### calculate y-values for horizontal lines:
+### this is for top-left corner of the bracket,
+### but multiplying sequences by -1 makes these 
+### values work for bottom right and left corners;
+### final round has teams at y=2*off.set
+
+r1.y.width <- 1.5*strheight(s="Virginia Common",units="in") # this effects the width of the first round
+r1.y.offset <- 0.125*r1.y.width # this effects distance from y=0
+
+r1.y <- seq(from=r1.y.offset,to=r1.y.offset+r1.y.width,length.out=16)
+r2.y <- seq(from=mean(r1.y[1:2]),to=mean(r1.y[15:16]),length.out=8)
+r3.y <- seq(from=mean(r2.y[1:2]),to=mean(r2.y[7:8]),length.out=4)
+r4.y <- seq(from=mean(r3.y[1:2]),to=mean(r3.y[3:4]),length.out=2)
+r5.y <- seq(from=mean(r4.y[1:2]),to=mean(r4.y[1:2]),length.out=1)
+r6.y <- 1.5*r1.y.offset
+
+### calculate horizontal bar start and stop coordinates
+### note that there are 6 total rounds -- 5 rounds per quadrant
+r1.x.width <- 1.25*strwidth("Viriginia Commonwealth","inches") # how long should horizontal lines be?
+r1.x.offset <- 1
+round.break.points <- -(seq(from=0,to=7*r1.x.width,by=r1.x.width)+r1.x.offset)
+
+r1.x <- round.break.points[7:6]
+r2.x <- round.break.points[6:5]
+r3.x <- round.break.points[5:4]
+r4.x <- round.break.points[4:3]
+r5.x <- round.break.points[3:2]
+r6.x <- round.break.points[2:1]
+
+### calculate verticals line coordinates: these are based off of
+### r1.y values. Round 5 verticals need to connect the four subtrees
+### via the top-left <-> bottom-left and top-right <-> bottom-right
+
+r1.verticals.start <- r1.y[first_odds(8)]
+r1.verticals.stop <- r1.y[first_evens(8)]
+
+r2.verticals.start <- r2.y[first_odds(4)]
+r2.verticals.stop <- r2.y[first_evens(4)]
+
+r3.verticals.start <- r3.y[first_odds(2)]
+r3.verticals.stop <- r3.y[first_evens(2)]
+
+r4.verticals.start <- r4.y[first_odds(1)]
+r4.verticals.stop <- r4.y[first_evens(1)]
+
+r5.verticals.start <- r5.y[1]
+r5.verticals.stop <- -r5.y[1]
+
+empty.bracket <- ggplot() + theme_bw() + theme(axis.line=element_blank(), axis.text.x=element_blank(), axis.text.y=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), axis.title.y=element_blank(), panel.border=element_blank(), panel.grid.major.x=element_blank(), panel.grid.minor.x=element_blank(), panel.grid.major.y=element_blank(), panel.grid.minor.y=element_blank(), plot.margin=unit(c(0,0,-6,-6),"mm"), text=element_text(size=12,hjust=0,vjust=0)) + coord_cartesian(ylim = c(-1.05*r1.y[16],1.05*r1.y[16]), xlim = c(1.025*r1.x[1],-1.025*r1.x[1]))
+
+### add first round bars, and vertical connectors, make addition of each quadrant verbose
+empty.bracket <- empty.bracket + geom_segment(aes(x=r1.x[1],y=r1.y,yend=r1.y,xend=r1.x[2])) + geom_segment(aes(x=r1.x[2],xend=r1.x[2],y=r1.verticals.start,yend=r1.verticals.stop)) + geom_segment(aes(x=r1.x[1],y=-r1.y,yend=-r1.y,xend=r1.x[2])) + geom_segment(aes(x=r1.x[2],xend=r1.x[2],y=-r1.verticals.start,yend=-r1.verticals.stop)) + geom_segment(aes(x=-r1.x[1],y=r1.y,yend=r1.y,xend=-r1.x[2])) + geom_segment(aes(x=-r1.x[2],xend=-r1.x[2],y=r1.verticals.start,yend=r1.verticals.stop)) + geom_segment(aes(x=-r1.x[1],y=-r1.y,yend=-r1.y,xend=-r1.x[2])) + geom_segment(aes(x=-r1.x[2],xend=-r1.x[2],y=-r1.verticals.start,yend=-r1.verticals.stop)) 
+
+### add second round
+empty.bracket <- empty.bracket + geom_segment(aes(x=r2.x[1],y=r2.y,yend=r2.y,xend=r2.x[2])) + geom_segment(aes(x=r2.x[2],xend=r2.x[2],y=r2.verticals.start,yend=r2.verticals.stop)) + geom_segment(aes(x=r2.x[1],y=-r2.y,yend=-r2.y,xend=r2.x[2])) + geom_segment(aes(x=r2.x[2],xend=r2.x[2],y=-r2.verticals.start,yend=-r2.verticals.stop)) + geom_segment(aes(x=-r2.x[1],y=r2.y,yend=r2.y,xend=-r2.x[2])) + geom_segment(aes(x=-r2.x[2],xend=-r2.x[2],y=r2.verticals.start,yend=r2.verticals.stop)) + geom_segment(aes(x=-r2.x[1],y=-r2.y,yend=-r2.y,xend=-r2.x[2])) + geom_segment(aes(x=-r2.x[2],xend=-r2.x[2],y=-r2.verticals.start,yend=-r2.verticals.stop)) 
+
+### add third round
+empty.bracket <- empty.bracket + geom_segment(aes(x=r3.x[1],y=r3.y,yend=r3.y,xend=r3.x[2])) + geom_segment(aes(x=r3.x[2],xend=r3.x[2],y=r3.verticals.start,yend=r3.verticals.stop)) + geom_segment(aes(x=r3.x[1],y=-r3.y,yend=-r3.y,xend=r3.x[2])) + geom_segment(aes(x=r3.x[2],xend=r3.x[2],y=-r3.verticals.start,yend=-r3.verticals.stop)) + geom_segment(aes(x=-r3.x[1],y=r3.y,yend=r3.y,xend=-r3.x[2])) + geom_segment(aes(x=-r3.x[2],xend=-r3.x[2],y=r3.verticals.start,yend=r3.verticals.stop)) + geom_segment(aes(x=-r3.x[1],y=-r3.y,yend=-r3.y,xend=-r3.x[2])) + geom_segment(aes(x=-r3.x[2],xend=-r3.x[2],y=-r3.verticals.start,yend=-r3.verticals.stop)) 
+
+### add fourth round
+empty.bracket <- empty.bracket + geom_segment(aes(x=r4.x[1],y=r4.y,yend=r4.y,xend=r4.x[2])) + geom_segment(aes(x=r4.x[2],xend=r4.x[2],y=r4.verticals.start,yend=r4.verticals.stop)) + geom_segment(aes(x=r4.x[1],y=-r4.y,yend=-r4.y,xend=r4.x[2])) + geom_segment(aes(x=r4.x[2],xend=r4.x[2],y=-r4.verticals.start,yend=-r4.verticals.stop)) + geom_segment(aes(x=-r4.x[1],y=r4.y,yend=r4.y,xend=-r4.x[2])) + geom_segment(aes(x=-r4.x[2],xend=-r4.x[2],y=r4.verticals.start,yend=r4.verticals.stop)) + geom_segment(aes(x=-r4.x[1],y=-r4.y,yend=-r4.y,xend=-r4.x[2])) + geom_segment(aes(x=-r4.x[2],xend=-r4.x[2],y=-r4.verticals.start,yend=-r4.verticals.stop)) 
+
+empty.bracket <- empty.bracket + geom_segment(aes(x=r5.x[1],y=r5.y,yend=r5.y,xend=r5.x[2])) +  geom_segment(aes(x=r5.x[1],y=-r5.y,yend=-r5.y,xend=r5.x[2])) + geom_segment(aes(x=r5.x[2],y=-r5.y, yend=r5.y, xend=r5.x[2])) + geom_segment(aes(x=-r5.x[1],y=r5.y,yend=r5.y,xend=-r5.x[2])) + geom_segment(aes(x=-r5.x[1],y=-r5.y,yend=-r5.y,xend=-r5.x[2])) + geom_segment(aes(x=-r5.x[2],y=-r5.y,yend=r5.y,xend=-r5.x[2])) 
+
+### due to symmetry, the 6th (and final round)
+empty.bracket <- empty.bracket  + geom_segment(aes(x=r6.x[1],y=r6.y,xend=r6.x[2],yend=r6.y)) + geom_segment(aes(x=-r6.x[1],y=-r6.y,xend=-r6.x[2],yend=-r6.y))
+
+### add winner location
+empty.bracket <- empty.bracket + geom_segment(aes(x=mean(r6.x),xend=-mean(r6.x),y=0,yend=0))
+
+
+empty.bracket
+```
 
 **I've set up a Euros Predictor Whatsapp group. It's the best place to gloat/cry about your guesses. Click [here](https://chat.whatsapp.com/DlxhlOMRrhD1AbIVlo6Tk6) to join the group. Or scan the QR code below.**
 
@@ -291,7 +541,9 @@ kbl(Euro2024, caption = "Euro 2024", align = "l") %>% kable_classic(html_font = 
 #API in R tutorial: https://www.dataquest.io/blog/r-api-tutorial/
   #https://statisticsglobe.com/api-in-r#looping-multiple-api-calls
 
-
+#KNOWN ISSUES
+  # sending back the spreadsheet in any format other than the original .xlsm will cause numbers to be imported and therefore interpreted differently. Like causing the correct score calculation to fail. added a line of code to check in the import chunk but maybe should add this to the spreadsheet instructions
+  # macro enabled file type causes security concerns on some computers. To enable the macro and editing you have to tell Windows to trust the file. Right click on the file, go to "properties", and click the unblock tick box at the bottom.
 
 #THINGS TO CHANGE EACH YEAR
   # In spreadsheet: Euro/Worldcup and date to appropriate and logo picture
@@ -305,6 +557,8 @@ kbl(Euro2024, caption = "Euro 2024", align = "l") %>% kable_classic(html_font = 
   # On github: Update link for entry spreadsheet
 
   # Republish ResultsApp.R once all entries have been submitted
+
+  # on gmail: update drafts for automatic replies. Then save draft as a template, overwriting previous one.
 ```
 
 This webpage and the predictor game is maintained by Ben Gillard. If you spot any bugs or have any ideas for improvements please contact me at benspredictorgame@gmail.com
