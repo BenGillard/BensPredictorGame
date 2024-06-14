@@ -492,7 +492,7 @@ heatmaply(ResultsMat,
 If you've forgotten what you entered or want to be nosy and see what your rival predicted for an upcoming game, you can find all entry data in the app below:
 
 ```{r shinyoutput, echo=FALSE, out.width='100%'}
-knitr::include_app("https://bengillard.shinyapps.io/PredictorGame/")
+knitr::include_app("https://bengillard.shinyapps.io/BensPredictorGame/")
 ```
 
 
