@@ -1,0 +1,12 @@
+name: BensPredictorGame
+title: BensPredictorGame
+username: bengillard
+account: bengillard
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12043765
+bundleId: 8642809
+url: https://bengillard.shinyapps.io/BensPredictorGame/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
