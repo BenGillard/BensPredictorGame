@@ -84,7 +84,7 @@ Forgot what you put for an upcoming game? Want to see what your bitter rival pre
 
 To see players who have been immortalised by victory in previous tournaments, see the [Predictor Hall of Fame].
 
-<!--> These are test results to make sure everything is working properly! Once all entries have been submitted I will update the webpage.-->
+<!-- These are test results to make sure everything is working properly! Once all entries have been submitted I will update the webpage.-->
 
 # Results so far
 
