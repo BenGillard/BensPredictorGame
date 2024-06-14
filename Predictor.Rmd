@@ -66,11 +66,13 @@ names(Scores)<- names(Results[2:length(Results)])
 
 **Welcome to the Euro 2024 Predictor Championship!** The aim of the game is simple, predict the scores for all of the group stage games at this year's tournament. Each correct *score* earns 3 points. Each correct *result* earns 1 point.
 
-**Follow this [link](https://github.com/BenGillard/BensPredictorGame/blob/main/Predictor.xlsm?raw=true) to download the entry spreadsheet.** Please send the completed spreadsheet file with the subject line "Predictor 2024" to benspredictorgame@gmail.com. Then forward to all your friends so they can get involved too. Deadline is 10pm on Tuesday 11th June ahead of the first fixture on 14th June so get your entry in quick!
+<!--**Follow this [link](https://github.com/BenGillard/BensPredictorGame/blob/main/Predictor.xlsm?raw=true) to download the entry spreadsheet.** Please send the completed spreadsheet file with the subject line "Predictor 2024" to benspredictorgame@gmail.com. Then forward to all your friends so they can get involved too. Deadline is 10pm on Tuesday 11th June ahead of the first fixture on 14th June so get your entry in quick!
 
-**Each entry costs £5 so please follow the instructions on how to pay that you'll receive after submitting your spreadsheet.**
+**Each entry costs £5 so please follow the instructions on how to pay that you'll receive after submitting your spreadsheet.**-->
 
 <!--Previous years have had up to 50 players so it is always a healthy kitty to play for. Although the bragging rights remain the most valuable prize.-->
+
+WE ARE LIVE! All entries have been fed into the predictor machine and there is nothing left to do except watch how your predictions turn out.
 
 We have **`r length(Results)-2` players** involved so we have a healthy kitty to pay out for the **top 5 players. £`r round(x = (length(Results)-2)*5*0.45, digits = 2)` goes to the top dog. £`r round(x = (length(Results)-2)*5*0.25, digits = 2)` for the top loser. £`r round(x = (length(Results)-2)*5*0.15, digits = 2)` for the best of the rest. And £`r round(x = (length(Results)-2)*5*0.05, digits = 2)` for 4th, 5th, and 6th places.**
 
@@ -82,7 +84,7 @@ Forgot what you put for an upcoming game? Want to see what your bitter rival pre
 
 To see players who have been immortalised by victory in previous tournaments, see the [Predictor Hall of Fame].
 
-> These are test results to make sure everything is working properly! Once all entries have been submitted I will update the webpage.
+<!--> These are test results to make sure everything is working properly! Once all entries have been submitted I will update the webpage.-->
 
 # Results so far
 
