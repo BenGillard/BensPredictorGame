@@ -116,7 +116,7 @@ rownames(LeaderBoard)<- 1:nrow(LeaderBoard)
 
 #Table of Champions (Coloured rows indicate money winners)
 
-kbl(LeaderBoard, caption = "Table of Champions", align = "l", row.names = TRUE) %>% kable_classic(html_font = "Cambria") %>%  row_spec(1, bold = T, background = "#c9b037") %>% row_spec(2, bold = T, background = "#b4b4b4") %>% row_spec(3, bold = T, background = "#ad8a56") %>% row_spec(4:5, bold = T, background = "#3CB371") %>% row_spec(which(LeaderBoard$Player == "RandomControlEntry"), italic = T, color = "red") %>% row_spec(which(LeaderBoard$Player == "ChatGPT"), italic = T, color = "red") %>% column_spec(column = 3, border_left = TRUE, border_right = TRUE)
+kbl(LeaderBoard, caption = "Table of Champions", align = "l", row.names = TRUE) %>% kable_classic(html_font = "Cambria") %>%  row_spec(1, bold = T, background = "#c9b037") %>% row_spec(2, bold = T, background = "#b4b4b4") %>% row_spec(3, bold = T, background = "#ad8a56") %>% row_spec(4:6, bold = T, background = "#3CB371") %>% row_spec(which(LeaderBoard$Player == "RandomControlEntry"), italic = T, color = "red") %>% row_spec(which(LeaderBoard$Player == "ChatGPT"), italic = T, color = "red") %>% column_spec(column = 3, border_left = TRUE, border_right = TRUE)
 ```
 
 > When 2 players have the same points tally, correct scores are taken into account. If players are still equal, the tie break question "How many total goals (including knockout games but excluding penalty shoot outs) will England score at Euro 2024?" will come into play. Closest wins.
