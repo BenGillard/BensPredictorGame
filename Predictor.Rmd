@@ -74,7 +74,7 @@ names(Scores)<- names(Results[2:length(Results)])
 
 WE ARE LIVE! All entries have been fed into the predictor machine and there is nothing left to do except watch how your predictions turn out.
 
-We have **`r length(Results)-3` players** involved so we have a healthy kitty to pay out for the **top 5 players. £`r round(x = (length(Results)-3)*5*0.45, digits = 2)` goes to the top dog. £`r round(x = (length(Results)-3)*5*0.25, digits = 2)` for the top loser. £`r round(x = (length(Results)-3)*5*0.15, digits = 2)` for the best of the rest. And £`r round(x = (length(Results)-3)*5*0.05, digits = 2)` for 4th, 5th, and 6th places.**
+We have **`r length(Results)-4` players** involved so we have a healthy kitty to pay out for the **top 5 players. £`r round(x = (length(Results)-4)*5*0.45, digits = 2)` goes to the top dog. £`r round(x = (length(Results)-4)*5*0.25, digits = 2)` for the top loser. £`r round(x = (length(Results)-4)*5*0.15, digits = 2)` for the best of the rest. And £`r round(x = (length(Results)-4)*5*0.05, digits = 2)` for 4th, 5th, and 6th places.**
 
 On the [Leaderboard] you'll see an extra player called *RandomControlEntry* in <span style="color: red;">red</span>. These predictions were generated randomly using the macro included in the spreadsheet. So if you have fewer points than *RandomControlEntry*, any thought you put into your entry was an utter waste of time. 
 
@@ -116,7 +116,7 @@ rownames(LeaderBoard)<- 1:nrow(LeaderBoard)
 
 #Table of Champions (Coloured rows indicate money winners)
 
-kbl(LeaderBoard, caption = "Table of Champions", align = "l", row.names = TRUE) %>% kable_classic(html_font = "Cambria") %>%  row_spec(1, bold = T, background = "#c9b037") %>% row_spec(2, bold = T, background = "#b4b4b4") %>% row_spec(3, bold = T, background = "#ad8a56") %>% row_spec(4:6, bold = T, background = "#3CB371") %>% row_spec(which(LeaderBoard$Player == "RandomControlEntry"), italic = T, color = "red") %>% row_spec(which(LeaderBoard$Player == "ChatGPT"), italic = T, color = "red") %>% column_spec(column = 3, border_left = TRUE, border_right = TRUE)
+kbl(LeaderBoard, caption = "Table of Champions", align = "l", row.names = TRUE) %>% kable_classic(html_font = "Cambria") %>%  row_spec(1, bold = T, background = "#c9b037") %>% row_spec(2, bold = T, background = "#b4b4b4") %>% row_spec(3, bold = T, background = "#ad8a56") %>% row_spec(4:6, bold = T, background = "#3CB371") %>% row_spec(which(LeaderBoard$Player == "RandomControlEntry"), italic = T, color = "red") %>% row_spec(which(LeaderBoard$Player == "ChatGPT"), italic = T, color = "red") %>% row_spec(which(LeaderBoard$Player == "ChrisSutton"), italic = T, color = "red") %>% column_spec(column = 3, border_left = TRUE, border_right = TRUE)
 ```
 
 > When 2 players have the same points tally, correct scores are taken into account. If players are still equal, the tie break question "How many total goals (including knockout games but excluding penalty shoot outs) will England score at Euro 2024?" will come into play. Closest wins.
