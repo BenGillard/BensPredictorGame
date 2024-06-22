@@ -74,7 +74,7 @@ names(Scores)<- names(Results[2:length(Results)])
 
 WE ARE LIVE! All entries have been fed into the predictor machine and there is nothing left to do except watch how your predictions turn out.
 
-We have **`r length(Results)-4` players** involved so we have a healthy kitty to pay out for the **top 5 players. £`r round(x = (length(Results)-4)*5*0.45, digits = 2)` goes to the top dog. £`r round(x = (length(Results)-4)*5*0.25, digits = 2)` for the top loser. £`r round(x = (length(Results)-4)*5*0.15, digits = 2)` for the best of the rest. And £`r round(x = (length(Results)-4)*5*0.05, digits = 2)` for 4th, 5th, and 6th places.**
+We have **`r length(Results)-4` players** involved so we have a healthy kitty to pay out for the **top 6 players. £`r round(x = (length(Results)-4)*5*0.45, digits = 2)` goes to the top dog. £`r round(x = (length(Results)-4)*5*0.25, digits = 2)` for the top loser. £`r round(x = (length(Results)-4)*5*0.15, digits = 2)` for the best of the rest. And £`r round(x = (length(Results)-4)*5*0.05, digits = 2)` for 4th, 5th, and 6th places.**
 
 On the [Leaderboard] you'll see an extra player called *RandomControlEntry* in <span style="color: red;">red</span>. These predictions were generated randomly using the macro included in the spreadsheet. So if you have fewer points than *RandomControlEntry*, any thought you put into your entry was an utter waste of time. 
 
