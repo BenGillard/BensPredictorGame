@@ -376,7 +376,7 @@ knitr::include_graphics("whatsappQR.jpg")
 
 Tracks the tie break question of how many goals England will score. The TrueGoals are updated after every [England game](https://www.youtube.com/watch?v=RJqimlFcJsM).
 
-```{r englandGoals, message=FALSE, warning=FALSE}
+```{r englandGoals, message=FALSE, warning=FALSE, fig.show='hold', out.width='50%'}
 par(mar=c(7,4,4,4))
 TrueGoals<- as.numeric(readxl::read_excel("PredictorTrueResults.xlsm")[35,14])
 AllGoals<- list(TrueGoals = TrueGoals) #seed list so player predictions can be added
@@ -390,6 +390,8 @@ names(AllGoals)[length(AllGoals)]<- player #rename list with player name
 }
 barplot(unlist(AllGoals), main = "Tie Breaker: England Goals scored", col = c("red", "white"), las = 2, cex.names = 0.7)
 abline(h = AllGoals$TrueGoals, lty = 2, col = "red")
+
+barplot(unlist(AllGoals[which(names(AllGoals) %in% c("TrueGoals", "BenFlynn", "BigAl"))]), main = "Tie Breaker: 3rd place", col = c("red", "white"), las = 2, cex.names = 0.7)
 ```
 
 # Hypothetical Euros
