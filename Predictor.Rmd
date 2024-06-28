@@ -502,7 +502,7 @@ A small internet shrine for those that have blazed a trail of glory in previous 
 
 ```{r HallofFame}
 #Euros 2024
-Euro2024<- data.frame(Position = c(1,2,3), Player = c("Probably", "Not", "You"))
+Euro2024<- data.frame(Position = c(1,2,3), Player = c("Paul Newcomb", "Martin Newcomb", "TBD"))
 
 #World Cup 2022
 WC2022<- data.frame(Position = c(1,2,3), Player = c("Jon Williams", "Paul Newcomb", "Lewis Evans"))
