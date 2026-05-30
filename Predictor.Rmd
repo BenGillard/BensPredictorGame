@@ -45,12 +45,13 @@ knitr::opts_chunk$set(echo = FALSE, tidy = TRUE)
 
 * email account
   * check and adjust email rules for benspredictorgame@gmail.com account
+  * attachments are not natively part of templated replies so reupload to google drive and refresh the attachment link
 -->
 
 ```{r FormatData, message=FALSE, warning=FALSE}
 library(tidyverse)
 #read in real life results
-TrueResults<- readxl::read_excel("PredictorTrueResults.xlsm")[7:79, 5:8] #change dimensions depending on number of games
+TrueResults<- readxl::read_excel("PredictorTrueResults.xlsm")[7:78, 5:8] #change dimensions depending on number of games
 colnames(TrueResults)<- c("Home", "HomeScore", "AwayScore", "Away")
 TrueResults<- cbind(TrueResults, Result = ifelse(TrueResults$HomeScore == TrueResults$AwayScore, "Draw", ifelse(TrueResults$HomeScore > TrueResults$AwayScore, TrueResults$Home, TrueResults$Away))) #result information
 AllPreds<- list(CorrectResults = TrueResults) #seed list so player predictions can be added
@@ -61,7 +62,7 @@ print(paste0("All entries are correctly formatted: ",length(entries) == sum(grep
 for(file in entries){
 predictionsRoot<- readxl::read_excel(file) #change to file
 player<- gsub(" ", "", as.character(predictionsRoot[32,12]),  fixed = TRUE)
-predictions<- predictionsRoot[7:79, 5:8] #change dimensions depending on number of games
+predictions<- predictionsRoot[7:78, 5:8] #change dimensions depending on number of games
 colnames(predictions)<- c("Home", "HomeScore", "AwayScore", "Away")
 predictions<- cbind(predictions, Result = ifelse(predictions$HomeScore == predictions$AwayScore, "Draw", ifelse(predictions$HomeScore > predictions$AwayScore, predictions$Home, predictions$Away))) #result information
 AllPreds<- append(AllPreds, list(predictions)) #append player's predictions to list seeded by correct results
@@ -98,11 +99,15 @@ names(Scores)<- names(Results[2:length(Results)])
 
 Previous years have had up to 50 players so it is always a healthy kitty to play for. Although the bragging rights remain the most valuable prize.
 
-These are test results to make sure everything is working properly! Once all entries have been submitted, the webpage will be updated with the real stuff.
+If you want some inspiration, see this [research note](https://klementoninvesting.substack.com/p/fifa-world-cup-predictions-2026) from an economist who is very good at predicting football tournament champions.
+
+Everything below is using test results to make sure everything is working properly! Once all entries have been submitted, the webpage will be updated with the real stuff.
 
 <!--WE ARE LIVE! All entries have been fed into the predictor machine and there is nothing left to do except watch how your predictions turn out.
 
 <!--We have **`r length(Results)-4` players** involved so we have a healthy kitty to pay out for the **top 6 players. £`r round(x = (length(Results)-4)*5*0.45, digits = 2)` goes to the top dog. £`r round(x = (length(Results)-4)*5*0.25, digits = 2)` for the top loser. £`r round(x = (length(Results)-4)*5*0.15, digits = 2)` for the best of the rest. And £`r round(x = (length(Results)-4)*5*0.05, digits = 2)` for 4th, 5th, and 6th places.**-->
+
+___
 
 On the [Leaderboard] you'll see an extra player called *RandomControlEntry* in <span style="color: red;">red</span>. These predictions were generated randomly using the macro included in the spreadsheet. So if you have fewer points than *RandomControlEntry*, any thought you put into your entry was an utter waste of time. 
 
