@@ -46,6 +46,15 @@ knitr::opts_chunk$set(echo = FALSE, tidy = TRUE)
 * email account
   * check and adjust email rules for benspredictorgame@gmail.com account
   * attachments are not natively part of templated replies so reupload to google drive and refresh the attachment link
+  
+  * message to send out via whatsapp/email to potential players:
+  For those of you that have played before, this is the message you've been waiting for. For those of you that are predictor newbies, get excited.
+  
+  The world cup 2026 predictor game is here!
+  
+  Key points are: predict group stage games at the world cup. Get points for how right you are and compete against people that *think* they know better. £5 entry fee that goes in a pot for the top predictors. Deadline is 9th June for entries. Its a bumper year with 72 (thanks FIFA/Infantino) group games so consider this fair notice to get your entry sorted.
+  
+  Go to https://bengillard.github.io/BensPredictorGame/ for all the information about the game. Or if you want to get stuck in straight away, email benspredictorgame@gmail.com with the subject line "i want to play".
 -->
 
 ```{r FormatData, message=FALSE, warning=FALSE}
