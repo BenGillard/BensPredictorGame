@@ -38,6 +38,7 @@ knitr::opts_chunk$set(echo = FALSE, tidy = TRUE)
   * test run script with placeholders and trueresults sheets
   * add/remove team specific plots? or keep wales in because its funnier.
   * switch between setup text and live text at the top of the html output
+  * change whatsapp group name on picture (can just reuse the same code each time)
 
 * shinyapp embed
   * republish resultsapp.r *after* generating AllResults.rds in rmd script
@@ -102,7 +103,7 @@ names(Scores)<- names(Results[2:length(Results)])
 
 <!--setup text-->
 
-**Follow this [link](https://github.com/BenGillard/BensPredictorGame/blob/main/Predictor.xlsm?raw=true) to download the entry spreadsheet or email benspredictorgame@gmail.com with the subject "I want to play!".** Please send the completed spreadsheet file with the subject line "Predictor 2026" to benspredictorgame@gmail.com. Then forward this website to all your friends so they can get involved too. **Deadline is 10pm on Sunday 9th June** ahead of the first fixture on 11th June so get your entry in quick!
+**Follow this [link](https://github.com/BenGillard/BensPredictorGame/blob/main/Predictor.xlsm?raw=true) to download the entry spreadsheet or email benspredictorgame@gmail.com with the subject "I want to play!".** Please send the completed spreadsheet file with the subject line "Predictor 2026" to benspredictorgame@gmail.com. Then forward this website to all your friends so they can get involved too. **Deadline is 10pm on 9th June** ahead of the first fixture on 11th June so get your entry in quick!
 
 **Each entry costs £5 so please follow the instructions on how to pay that you'll receive after submitting your spreadsheet.**
 
@@ -165,7 +166,7 @@ rownames(LeaderBoard)<- 1:nrow(LeaderBoard)
 kbl(LeaderBoard, caption = "Table of Champions", align = "l", row.names = TRUE) %>% kable_classic(html_font = "Cambria") %>%  row_spec(1, bold = T, background = "#c9b037") %>% row_spec(2, bold = T, background = "#b4b4b4") %>% row_spec(3, bold = T, background = "#ad8a56") %>% row_spec(4:6, bold = T, background = "#3CB371") %>% row_spec(which(LeaderBoard$Player == "RandomControlEntry"), italic = T, color = "red") %>% row_spec(which(LeaderBoard$Player == "ChatGPT"), italic = T, color = "red") %>% row_spec(which(LeaderBoard$Player == "ChrisSutton"), italic = T, color = "red") %>% column_spec(column = 3, border_left = TRUE, border_right = TRUE)
 ```
 
-> When 2 players have the same points tally, correct scores are taken into account. If players are still equal, the tie break question "How many total goals (including knockout games but excluding penalty shoot outs) will England score at Euro 2024?" will come into play. Closest wins.
+> When 2 players have the same points tally, correct scores are taken into account. If players are still equal, the tie break question "How many total goals (including knockout games but excluding penalty shoot outs) will England score at the 2026 World Cup?" will come into play. Closest wins.
 
 ```{r CUP, eval=FALSE, echo=FALSE}
 # NEW FOR 2024, THE PREDICTOR CUP
@@ -433,7 +434,7 @@ abline(h = AllGoals$TrueGoals, lty = 2, col = "red")
 #barplot(unlist(AllGoals[which(names(AllGoals) %in% c("TrueGoals", "Player1", "Player2"))]), main = "Tie Breaker: 3rd place", col = c("red", "white"), las = 2, cex.names = 0.7)
 ```
 
-# Hypothetical Euros
+# Hypothetical Tournament
 
 Who do we, as a collective of Mystic Megs, predict will be the winners and losers in the group stage? This plot shows how many times each team has been predicted to win a match in the group stages.
 
@@ -587,21 +588,6 @@ kbl(Euro2024, caption = "Euro 2024", align = "l") %>% kable_classic(html_font = 
 #KNOWN ISSUES
   # sending back the spreadsheet in any format other than the original .xlsm will cause numbers to be imported and therefore interpreted differently. Like causing the correct score calculation to fail. added a line of code to check in the import chunk but maybe should add this to the spreadsheet instructions
   # macro enabled file type causes security concerns on some computers. To enable the macro and editing you have to tell Windows to trust the file. Right click on the file, go to "properties", and click the unblock tick box at the bottom.
-
-#THINGS TO CHANGE EACH YEAR
-  # In spreadsheet: Euro/Worldcup and date to appropriate and logo picture
-  # In spreadsheet: Fixture list (get from internet spreadsheet if available)
-  # In spreadsheet: macro cells to fill
-
-  # In rmd script: title and blurb at start, change to current year etc
-  # In rmd script: change whatsapp group name on picture (can just reuse the same code each time)
-  # In rmd script: change import dimensions depending on the number of fixtures
-
-  # On github: Update link for entry spreadsheet
-
-  # Republish ResultsApp.R once all entries have been submitted
-
-  # on gmail: update drafts for automatic replies. Then save draft as a template, overwriting previous one.
 ```
 
 This webpage and the predictor game is maintained by Dr Ben Gillard. If you spot any bugs or have any ideas for improvements please contact me at benspredictorgame@gmail.com
