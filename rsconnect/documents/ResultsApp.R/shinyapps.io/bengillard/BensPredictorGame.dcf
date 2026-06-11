@@ -5,9 +5,9 @@ account: bengillard
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 12043765
-bundleId: 12027693
+bundleId: 12115614
 url: https://bengillard.shinyapps.io/BensPredictorGame/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: ArchiveTournaments/EuroPredictor.xlsm|ArchiveTournaments/EuroPredictorTrueResults.xlsm|docs/index.html|england.gif|Euro2024.JPG|FIFA-World-Cup-26-Official-Brand-unveiled-in-Los-Angeles.avif|Predictor.Rmd|Predictor.xlsm|Predictor2026.xlsm|PredictorTracker.xlsx|PredictorTrueResults.xlsm|PredictorTrueResults2026.xlsm|README.md|Rplot001.jpg|whatsappQR.jpg|Entries
+ignoredFiles: ArchiveTournaments/EuroPredictor.xlsm|ArchiveTournaments/EuroPredictorTrueResults.xlsm|docs/index.html|england.gif|FIFA-World-Cup-26-Official-Brand-unveiled-in-Los-Angeles.avif|Predictor.Rmd|Predictor.xlsm|PredictorTrueResults.xlsm|README.md|Rplot001.jpg|Tracker.xlsx|whatsappQR.jpg|Entries|Entries_Proper
