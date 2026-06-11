@@ -131,7 +131,7 @@ Everything below is using test results to make sure everything is working proper
 
 **WE ARE LIVE!** All entries have been fed into the predictor machine and there is nothing left to do except watch how your predictions turn out.
 
-We have **`r totalplayers` players** involved so we have a healthy kitty to pay out for the **top 6 players. £`r round(x = totalplayers*5*0.445, digits = 3)` goes to the top dog. £`r round(x = totalplayers*5*0.245, digits = 3)` for the top loser. £`r round(x = totalplayers*5*0.145, digits = 3)` for the best of the rest. And £`r round(x = totalplayers*5*0.055, digits = 3)` for 4th, 5th, and 6th places.** *Although the bragging rights remain the most valuable prize.*
+We have **`r totalplayers` players** involved so we have a healthy kitty to pay out for the **top 6 players. £`r round(x = totalplayers*5*0.44, digits = 3)` goes to the top dog. £`r round(x = totalplayers*5*0.24, digits = 3)` for the top loser. £`r round(x = totalplayers*5*0.14, digits = 3)` for the best of the rest. And £`r round(x = totalplayers*5*0.06, digits = 3)` for 4th, 5th, and 6th places.** *Although the bragging rights remain the most valuable prize.*
 
 ___
 
