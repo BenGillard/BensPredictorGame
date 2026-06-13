@@ -543,7 +543,7 @@ ResultsMat[1]<- NULL #for ease of plotting, change match descriptor to rownames 
 
 #for scores matrix to be included in hover text
 for(P in names(Results)){
-ScoresMat<- cbind(ScoresMat, paste0("Guess: ",Results[[P]][,2], "-", Results[[P]][,3]))
+ScoresMat<- cbind(ScoresMat, Guess = paste0("Guess: ",Results[[P]][,2], "-", Results[[P]][,3]))
 } #no need to correct dim names because ResultsMat is the core matrix
 ScoresMat[1:2]<- NULL #first column is game and second column is correct results so need to remove for heatmap
 
@@ -562,6 +562,24 @@ heatmaply(ResultsMat,
         hide_colorbar = TRUE,
         custom_hovertext = ScoresMat
         )
+```
+
+
+```{r upcominggames, eval=FALSE}
+DoneGames<- which(!is.na(ResultsSoFar$HomeScore))
+
+UpcomingGames<- lapply(1:3, function(y) lapply(Results, function(x) head(x[-DoneGames,"Result"], n = 3)[y])) #remove donegames from results dataframes and get the next 3 games from each dataframe (using head n=3)
+
+UpcomingGame1<- table(unlist(UpcomingGames[[1]]))
+UpcomingGame2<- table(unlist(UpcomingGames[[2]]))
+UpcomingGame3<- as.data.frame(table(unlist(UpcomingGames[[3]])))#get counts of the three options from all dataframes
+
+#horizontal barplot with proportions of home/draw/away
+
+barplot(UpcomingGame3)
+
+ggplot() + geom_col(data = UpcomingGame3, aes(y = Freq), stat = "identity", position = "stack")#, fill = Var1)
+
 ```
 
 # Entry reminder
