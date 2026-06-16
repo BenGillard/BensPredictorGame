@@ -569,9 +569,9 @@ heatmaply(ResultsMat,
 Quickly see the groupthink for the next 3 games.
 
 ```{r upcominggames, fig.show='hold', fig.height=0.75, out.width='100%', results='hide', warning=FALSE}
-DoneGames<- which(!is.na(ResultsSoFar$HomeScore))
+DoneGames<- which(!is.na(Results$CorrectResults$HomeScore))
 
-UpcomingGames<- lapply(1:4, function(y) lapply(Results, function(x) head(x[-DoneGames,"Result"], n = 4)[y])) #remove donegames from results dataframes and get the next 3 games from each dataframe (using head n=3)
+UpcomingGames<- lapply(1:4, function(y) lapply(Results, function(x) head(x[-DoneGames,"Result"], n = 4)[y])) #remove donegames from results dataframes and get the next 4 games from each dataframe (using head n=4)
 
 UpcomingGame1<- as.data.frame(table(unlist(UpcomingGames[[1]]))) %>% arrange(Freq)
 UpcomingGame2<- as.data.frame(table(unlist(UpcomingGames[[2]]))) %>% arrange(Freq)
