@@ -139,7 +139,7 @@ On the [Leaderboard] you'll see some extra players included in <span style="colo
 
 Go to [Results Tracker] for a more in depth look at which games scored you points.
 
-Forgot what you put for an upcoming game? Want to see what your bitter rival predicted too? Go to the [Entry Reminder] section and use the drop down to find full predictions for a specific player.
+Forgot what you put for an upcoming game? Want to see what your bitter rival predicted too? Go to the [Entry Reminder] section and use the drop down to find full predictions for a specific player. Or if you want a general idea of the split of opinion for the next few matches go to [Upcoming Games].
 
 To see players who have been immortalised by victory in previous tournaments, see the [Predictor Hall of Fame].
 
@@ -564,7 +564,7 @@ heatmaply(ResultsMat,
         )
 ```
 
-# Upcoming games
+# Upcoming Games
 
 Quickly see the groupthink for the next 3 games.
 
