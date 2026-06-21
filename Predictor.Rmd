@@ -645,6 +645,7 @@ kbl(WC2026, caption = "World Cup 2026", align = "l") %>% kable_classic(html_font
   #Hypothetical Tourney - Everyone's predicted group winners. Bit of complex coding required. Predicted points too?
       #kable table for each group
   #Is there an API or something that results can be extracted from so everything updates automatically?
+  #Include date in Allresults.rds so that a filter-by-date can be added into resultsapp.r
 
 #API in R tutorial: https://www.dataquest.io/blog/r-api-tutorial/
   #https://statisticsglobe.com/api-in-r#looping-multiple-api-calls
